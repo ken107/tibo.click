@@ -1,0 +1,10 @@
+{
+  "name": "vemo",
+  "version": "1.0.0",
+  "description": "Vemo.app website",
+  "scripts": {
+    "start": "http-server static"
+  },
+  "author": "Vemo LLC <support@vemo.app>",
+  "license": "ISC"
+}

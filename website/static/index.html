@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Vemo</title>
+        
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+        <style>
+            .card {
+                margin-top: 2em;
+            }
+        </style>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://assets.lsdsoftware.com/lib/databind.js"></script>
+        <script src="js/common.js"></script>
+        <script>
+            joinError = null;
+            startError = null;
+            progress = 0;
+
+            function clearErrors() {
+                joinError = null;
+                startError = null;
+            }
+
+            function joinSession(inviteCode) {
+                clearErrors();
+                progress++;
+                callService("getSession", [inviteCode])
+                    .then(function(sessionId) {
+                        location.href = "view/?s=" + sessionId;
+                    })
+                    .catch(function(err) {
+                        joinError = err;
+                    })
+                    .finally(function() {
+                        progress--;
+                    })
+            }
+
+            function startSession() {
+                clearErrors();
+                progress++;
+                callService("createSession")
+                    .then(function(sessionId) {
+                        location.href = "control/?s=" + sessionId;
+                    })
+                    .catch(function(err) {
+                        startError = err;
+                    })
+                    .finally(function() {
+                        progress--;
+                    })
+            }
+        </script>
+    </head>
+    <body bind-var-action="'JOIN'" bind-event-change="if ($(event.target).is('[name=action]')) #action = event.target.value">
+        <div class="container">
+            <h1>Vemo</h1>
+
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <input type="radio" name="action" value="JOIN" id="joinRadio" checked>
+                        <label for="joinRadio">{{getI18n("joinSessionText")}}</label>
+                    </h5>
+                    <div bind-repeater-if="#action == 'JOIN' ? 1 : 0">
+                        <form bind-event-submit="this.joinSession(thisElem.inviteCode.value); return false">
+                            <div class="alert alert-danger" bind-repeater-if="#joinError ? 1 : 0">{{#joinError.message}}</div>
+                            <div class="input-group">
+                                <input type="text" name="inviteCode" class="form-control" bind-statement-1="thisElem.placeholder = getI18n('inviteCodePlaceholder')">
+                                <span class="input-group-append">
+                                    <button type="submit" class="btn btn-primary">{{getI18n("joinButton")}}</button>
+                                </span>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-body">
+                    <h5 class="card-title">
+                        <input type="radio" name="action" value="START" id="startRadio">
+                        <label for="startRadio">{{getI18n("startSessionText")}}</label>
+                    </h5>
+                    <div bind-repeater-if="#action == 'START' ? 1 : 0">
+                        <form bind-event-submit="this.startSession(); return false">
+                            <div class="alert alert-danger" bind-repeater-if="#startError ? 1 : 0">{{#startError.message}}</div>
+                            <button type="submit" class="btn btn-primary">{{getI18n("startButton")}}</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>
