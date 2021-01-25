@@ -5,10 +5,81 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Vemo</title>
-        
-        <script src="//media.twiliocdn.com/sdk/js/video/releases/2.8.0/twilio-video.min.js"></script>
+
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet" crossorigin="anonymous">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" crossorigin="anonymous">
+        <link href="../css/common.css" rel="stylesheet">
+        <style>
+            .video-container {
+                position: absolute;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                display: flex;
+                align-items: stretch;
+                justify-content: stretch;
+            }
+            .control-panel {
+                position: absolute;
+                right: 0;
+                bottom: 0;
+                width: 20em;
+            }
+            .control-panel .chat-log {
+                height: 15em;
+            }
+        </style>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+        <script src="https://assets.lsdsoftware.com/lib/databind.js"></script>
+        <script src="https://media.twiliocdn.com/sdk/js/video/releases/2.8.0/twilio-video.min.js"></script>
+        <script src="../js/common.js"></script>
+        <script src="../js/rtc.js"></script>
+        <script>
+            callService("getControlToken", [queryString.s])
+                .then(token => rtc.connect(token))
+
+            function requestScreen() {
+                rtc.sendRpcMessage("onRequestScreen");
+            }
+        </script>
     </head>
     <body>
-
+        <div class="video-container"
+            bind-statement-1="if (#buddy.videoTrack) $(thisElem).empty().append(#buddy.videoTrack.attach())"></div>
+        <div class="control-panel">
+            <div class="user-list">
+                <div class="user" bind-repeater-if="#connected ? 1 : 0">
+                    <div>Me</div>
+                    <i class="material-icons audio-status" bind-statement-1="$(thisElem).toggleClass('active', !!#audioPublished)">mic</i>
+                </div>
+                <div class="user" bind-repeater-if="#buddy.connected ? 1 : 0">
+                    <div>Customer</div>
+                    <i class="material-icons screenshare-status" bind-statement-1="$(thisElem).toggleClass('active', !!#buddy.videoSubscribed)">desktop_windows</i>
+                    <i class="material-icons audio-status" bind-statement-1="$(thisElem).toggleClass('active', !!#buddy.audioSubscribed)">mic</i>
+                </div>
+            </div>
+            <div class="buttons">
+                <button type="button" class="btn btn-sm btn-primary"
+                    bind-repeater-if="#audioPublished ? 0 : 1"
+                    bind-event-click="rtc.startAudioConversation()">Talk</button>
+                <button type="button" class="btn btn-sm btn-primary"
+                    bind-repeater-if="#buddy.videoSubscribed ? 0 : 1"
+                    bind-event-click="this.requestScreen()">Request screen</button>
+            </div>
+            <div class="chat-log">
+                <div bind-repeater-i="#chatLog.length" bind-var-entry="#chatLog[#i]">
+                    <u>{{#entry.isOwn ? "Me" : "Customer"}}</u>: {{#entry.text}}</div>
+            </div>
+            <form class="chat-input" bind-event-submit="rtc.sendChat(thisElem.message.value); thisElem.message.value=''; return false">
+                <div class="input-group">
+                    <input type="text" name="message" class="form-control" autocomplete="off">
+                    <span class="input-group-append">
+                        <button type="submit" class="btn btn-primary">Send</button>
+                    </span>
+                </div>
+            </form>
+        </div>
     </body>
 </html>

@@ -1,12 +1,12 @@
 
-var queryString = parseQueryString();
+const queryString = parseQueryString();
 
 function parseQueryString() {
-    var query = {};
+    const query = {};
     if (location.search) {
-        var tuples = location.search.substr(1).split('&');
-        for (var i=0; i<tuples.length; i++) {
-                var pair = tuples[i].split('=', 2);
+        const tuples = location.search.substr(1).split('&');
+        for (let i=0; i<tuples.length; i++) {
+                const pair = tuples[i].split('=', 2);
                 if (pair.length == 2) query[decodeURIComponent(pair[0])] = decodeURIComponent(pair[1].replace(/\+/g, '%20'));
                 else if (pair.length == 1) query[decodeURIComponent(pair[0])] = true;
         }
@@ -15,7 +15,7 @@ function parseQueryString() {
 }
 
 
-var serviceUrl = "https://support.lsdsoftware.com/vemo";
+const serviceUrl = "http://localhost:8081/vemo";
 
 function callService(method, args) {
     return new Promise(function(fulfill, reject) {
@@ -35,7 +35,7 @@ function callService(method, args) {
 }
 
 
-var i18nMessages = {
+const i18nMessages = {
     "en": {
         joinSessionText: "Join a session",
         joinButton: "Join",
@@ -46,10 +46,10 @@ var i18nMessages = {
 }
 
 function getI18n(name) {
-    var lang = queryString.l || "en";
-    var index = lang.length;
+    const lang = queryString.l || "en";
+    let index = lang.length;
     do {
-        var tmp = lang.slice(0, index);
+        const tmp = lang.slice(0, index);
         if (i18nMessages[tmp] && i18nMessages[tmp][name]) return i18nMessages[tmp][name];
         index = lang.lastIndexOf("-", index-1);
     }
@@ -61,7 +61,7 @@ function getI18n(name) {
 if (!Promise.prototype.finally) {
     Object.defineProperty(Promise.prototype, 'finally', {
         value: function(callback) {
-            var promise = this;
+            const promise = this;
             function chain() {
                 return Promise.resolve(callback()).then(function() {return promise});
             }

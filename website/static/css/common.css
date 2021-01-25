@@ -1,0 +1,42 @@
+
+.control-panel {
+    border: .2em solid lightgray;
+    background-color: #eee;
+}
+.control-panel > :not(:first-child) {
+    border-top: .2em solid lightgray;
+}
+.control-panel > * {
+    padding: .5em;
+}
+
+
+.control-panel .user-list .user {
+    display: flex;
+    flex-direction: row;
+}
+.control-panel .user-list .user > :first-child {
+    margin-right: auto;
+}
+.control-panel .user-list .material-icons {
+    color: lightgray;
+}
+.control-panel .user-list .chat-status.active {
+    color: gray;
+}
+.control-panel .user-list .audio-status.active {
+    color: green;
+}
+.control-panel .user-list .screenshare-status.active {
+    color: blue;
+}
+
+
+.control-panel .buttons {
+    background-color: lightgray;
+}
+
+.control-panel .chat-log {
+    background-color: white;
+    overflow: auto;
+}

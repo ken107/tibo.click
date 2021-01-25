@@ -11,6 +11,23 @@
             .card {
                 margin-top: 2em;
             }
+            .screen-cover {
+                position: fixed;
+                top: 0;
+                right: 0;
+                bottom: 0;
+                left: 0;
+                background-color: rgba(0,0,0,.5);
+                display: flex;
+                align-items: center;
+                justify-content: space-evenly;
+            }
+            .screen-cover .spinner-border {
+                width: 10vmin;
+                height: 10vmin;
+                border-width: 1vmin;
+                color: white;
+            }
         </style>
 
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
@@ -34,10 +51,8 @@
                         location.href = "view/?s=" + sessionId;
                     })
                     .catch(function(err) {
-                        joinError = err;
-                    })
-                    .finally(function() {
                         progress--;
+                        joinError = err;
                     })
             }
 
@@ -49,10 +64,8 @@
                         location.href = "control/?s=" + sessionId;
                     })
                     .catch(function(err) {
-                        startError = err;
-                    })
-                    .finally(function() {
                         progress--;
+                        startError = err;
                     })
             }
         </script>
@@ -95,6 +108,10 @@
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div class="screen-cover" bind-repeater-if="#progress ? 1 : 0">
+            <div class="spinner-border"></div>
         </div>
     </body>
 </html>

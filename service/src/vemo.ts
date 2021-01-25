@@ -17,7 +17,7 @@ const invitations: {[code: string]: Invitation|undefined} = {}
 
 
 export function createSession() {
-    const sessionId = createSessionId();
+    const sessionId = generateSessionId();
     const room = sessionId;
     sessions[sessionId] = {
         controlToken: createVideoAccessToken(room, "control"),
@@ -40,7 +40,7 @@ export function getViewToken(sessionId: string) {
 export function createInvitation(sessionId: string) {
     assert(sessionId, "Missing args");
     assert(sessions[sessionId], "Session not found");
-    const inviteCode = 1000 + Math.floor(Math.random() * 9000)
+    const inviteCode = generateInviteCode();
     const expires = Date.now() + config.invitationTtl
     invitations[inviteCode] = {
         sessionId,
@@ -56,8 +56,12 @@ export function getSessionIdFromInvitation(inviteCode: string) {
 }
 
 
-function createSessionId() {
+function generateSessionId() {
     return String(Math.random()).slice(2);
+}
+
+function generateInviteCode() {
+    return 1000 + Math.floor(Math.random() * 9000);
 }
 
 function createVideoAccessToken(room: string, identity: string) {
