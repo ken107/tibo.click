@@ -1,6 +1,7 @@
 
 connected = false;
 audioPublished = false;
+screenPublished = false;
 buddy = {
     connected: 0,
     dataSubscribed: 0,
@@ -73,6 +74,7 @@ const rtc = (function() {
                     }
                     else if (track.kind == "video") {
                         track.detach();
+                        if (buddy.videoTrack == track) buddy.videoTrack = null;
                     }
                 })
             })
@@ -97,6 +99,18 @@ const rtc = (function() {
         onRequestAudio: function() {
             publishAudio();
         },
+        onRequestScreen: function() {
+            if (!screenPublished) {
+                screenPublished = true;
+                navigator.mediaDevices.getDisplayMedia()
+                    .then(stream => stream.getTracks()[0])
+                    .then(track => room.localParticipant.publishTrack(new Twilio.Video.LocalVideoTrack(track)))
+                    .catch(err => {
+                        console.error(err);
+                        screenPublished = false;
+                    })
+            }
+        }
     }
 
     function sendChat(text) {
@@ -121,11 +135,16 @@ const rtc = (function() {
         sendRpcMessage("onRequestAudio");
     }
 
+    function requestScreen() {
+        sendRpcMessage("onRequestScreen");
+    }
+
     return {
         connect,
         sendRpcMessage,
         setRpcHandler: (method, handler) => rpcHandlers[method] = handler,
         sendChat,
         startAudioConversation,
+        requestScreen,
     }
 })();

@@ -11,21 +11,24 @@
 }
 
 
+.control-panel .user-list {
+    user-select: none;
+}
 .control-panel .user-list .user {
     display: flex;
     flex-direction: row;
 }
-.control-panel .user-list .user > :first-child {
-    margin-right: auto;
-}
-.control-panel .user-list .material-icons {
+.control-panel .user-list .material-icons, .control-panel .user-list .connect-status {
     color: lightgray;
+}
+.control-panel .user-list .connect-status.active {
+    color: green;
 }
 .control-panel .user-list .chat-status.active {
     color: gray;
 }
 .control-panel .user-list .audio-status.active {
-    color: green;
+    color: red;
 }
 .control-panel .user-list .screenshare-status.active {
     color: blue;
