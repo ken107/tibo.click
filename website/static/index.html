@@ -48,7 +48,7 @@
                 progress++;
                 callService("getSession", [inviteCode])
                     .then(function(sessionId) {
-                        location.href = "view/?s=" + sessionId;
+                        location.href = "view.html?s=" + sessionId;
                     })
                     .catch(function(err) {
                         progress--;
@@ -61,7 +61,7 @@
                 progress++;
                 callService("createSession")
                     .then(function(sessionId) {
-                        location.href = "control/?s=" + sessionId;
+                        location.href = "control.html?s=" + sessionId;
                     })
                     .catch(function(err) {
                         progress--;
