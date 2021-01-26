@@ -35,7 +35,7 @@ function handleVemoCall(method, args) {
         case "getControlToken": return vemo.getControlToken(args[0]);
         case "getViewToken": return vemo.getViewToken(args[0]);
         case "createInvitation": return vemo.createInvitation(args[0]);
-        case "getSessionIdFromInvitation": return vemo.getSessionIdFromInvitation(args[0]);
+        case "getSessionIdForInvitation": return vemo.getSessionIdFromInvitation(args[0]);
         default: throw new Error("Bad method");
     }
 }

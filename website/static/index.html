@@ -46,7 +46,7 @@
             function joinSession(inviteCode) {
                 clearErrors();
                 progress++;
-                callService("getSession", [inviteCode])
+                callService("getSessionIdForInvitation", [inviteCode])
                     .then(function(sessionId) {
                         location.href = "view.html?s=" + sessionId;
                     })

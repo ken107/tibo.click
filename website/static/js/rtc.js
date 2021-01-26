@@ -104,7 +104,16 @@ const rtc = (function() {
                 screenPublished = true;
                 navigator.mediaDevices.getDisplayMedia()
                     .then(stream => stream.getTracks()[0])
-                    .then(track => room.localParticipant.publishTrack(new Twilio.Video.LocalVideoTrack(track)))
+                    .then(mediaStreamTrack => {
+                        const localVideoTrack = new Twilio.Video.LocalVideoTrack(mediaStreamTrack);
+                        return room.localParticipant.publishTrack(localVideoTrack)
+                            .then(() => {
+                                mediaStreamTrack.addEventListener("ended", () => {
+                                    room.localParticipant.unpublishTrack(localVideoTrack);
+                                    screenPublished = false;
+                                })
+                            })
+                    })
                     .catch(err => {
                         console.error(err);
                         screenPublished = false;
