@@ -6,7 +6,8 @@
   "scripts": {
     "build": "tsc",
     "watch": "tsc --watch",
-    "start": "node dist/index"
+    "start": "node dist/index",
+    "deploy": "rsync -avz dist/ app:service/webservices/dist/vemo/"
   },
   "author": "Vemo LLC <support@vemo.app>",
   "license": "ISC",

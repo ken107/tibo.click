@@ -4,13 +4,18 @@ import * as express from "express"
 import config from "./config"
 import * as vemo from "./vemo"
 
-const app = express();
-const cors = Cors();
+if (require.main == module) {
+    const app = express();
+    mount(app);
+    app.listen(config.listeningPort, () => console.log(`Service started on ${config.listeningPort}`))
+}
 
-app.options("/vemo", cors)
-app.post("/vemo", cors, bodyParser.json(), handleVemoRequest)
-app.listen(config.listeningPort, () => console.log(`Service started on ${config.listeningPort}`))
-
+export function mount(app: express.Express) {
+    console.warn("Vemo using unrestricted cors settings");
+    const cors = Cors();
+    app.options("/vemo", cors)
+    app.post("/vemo", cors, bodyParser.json(), handleVemoRequest)
+}
 
 async function handleVemoRequest(req: express.Request, res: express.Response) {
     const { method, args } = req.body;

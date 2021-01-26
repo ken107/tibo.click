@@ -15,7 +15,7 @@ function parseQueryString() {
 }
 
 
-const serviceUrl = "http://localhost:8081/vemo";
+const serviceUrl = "https://support.lsdsoftware.com/vemo";
 
 function callService(method, args) {
     return new Promise(function(fulfill, reject) {
