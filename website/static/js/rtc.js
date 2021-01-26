@@ -5,7 +5,7 @@ screenPublished = false;
 buddy = {
     connected: 0,
     dataSubscribed: 0,
-    audioSubscribed: 0,
+    audioTrack: null,
     videoTrack: null,
 };
 chatLog = [];
@@ -55,7 +55,8 @@ const rtc = (function() {
                         track.on("message", onRpcMessage);
                     }
                     else if (track.kind == "audio") {
-                        buddy.audioSubscribed++;
+                        if (buddy.audioTrack) buddy.audioTrack.detach();
+                        buddy.audioTrack = track;
                     }
                     else if (track.kind == "video") {
                         if (buddy.videoTrack) buddy.videoTrack.detach();
@@ -70,7 +71,8 @@ const rtc = (function() {
                         buddy.dataSubscribed--;
                     }
                     else if (track.kind == "audio") {
-                        buddy.audioSubscribed--;
+                        track.detach();
+                        if (buddy.audioTrack == track) buddy.audioTrack = null;
                     }
                     else if (track.kind == "video") {
                         track.detach();

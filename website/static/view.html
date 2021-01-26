@@ -39,7 +39,8 @@
                 .then(token => rtc.connect(token))
         </script>
     </head>
-    <body>
+    <body bind-var-can-play-audio="false" bind-event-click="#canPlayAudio = true">
+        <audio autoplay bind-statement-1="if (#buddy.audioTrack && #canPlayAudio) #buddy.audioTrack.attach(thisElem)"></audio>
         <div class="fullscreen-center">
             <div class="control-panel">
                 <div class="user-list">
@@ -66,8 +67,8 @@
                         <span class="ms-1 me-auto">John</span>
                         <i class="material-icons audio-status"
                             bind-var-tooltip="new bootstrap.Tooltip(thisElem)"
-                            bind-statement-2="$(thisElem).attr('data-bs-original-title', #buddy.audioSubscribed ? 'microphone active' : 'microphone off')"
-                            bind-statement-1="$(thisElem).toggleClass('active', !!#buddy.audioSubscribed)">mic</i>
+                            bind-statement-2="$(thisElem).attr('data-bs-original-title', #buddy.audioTrack ? 'microphone active' : 'microphone off')"
+                            bind-statement-1="$(thisElem).toggleClass('active', !!#buddy.audioTrack)">mic</i>
                     </div>
                 </div>
                 <div class="chat-log">
@@ -81,6 +82,10 @@
                     </div>
                 </form>
             </div>
+        </div>
+
+        <div class="fullscreen-center" style="background-color: black; opacity: .5" bind-repeater-if="#buddy.audioTrack && !#canPlayAudio ? 1 : 0">
+            <div style="font-size: xx-large; color: white">Click to Continue</div>
         </div>
     </body>
 </html>
