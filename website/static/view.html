@@ -39,8 +39,12 @@
                 .then(token => rtc.connect(token))
         </script>
     </head>
-    <body bind-var-can-play-audio="false" bind-event-click="#canPlayAudio = true">
+    <body bind-var-can-chat="#buddy.connected"
+        bind-var-can-play-audio="false"
+        bind-event-click="#canPlayAudio = true">
+
         <audio autoplay bind-statement-1="if (#buddy.audioTrack && #canPlayAudio) #buddy.audioTrack.attach(thisElem)"></audio>
+
         <div class="fullscreen-center">
             <div class="control-panel">
                 <div class="user-list">
@@ -77,8 +81,10 @@
                 </div>
                 <form class="chat-input" bind-event-submit="rtc.sendChat(thisElem.message.value); thisElem.message.value=''; return false">
                     <div class="input-group">
-                        <input type="text" name="message" class="form-control" autocomplete="off">
-                        <button type="submit" class="btn btn-primary">Send</button>
+                        <input type="text" name="message" class="form-control" autocomplete="off"
+                            bind-statement-1="thisElem.disabled = !#canChat">
+                        <button type="submit" class="btn btn-primary"
+                            bind-statement-1="thisElem.disabled = !#canChat">Send</button>
                     </div>
                 </form>
             </div>

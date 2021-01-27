@@ -125,6 +125,7 @@ const rtc = (function() {
     }
 
     function sendChat(text) {
+        if (!text) return;
         chatLog.push({text, isOwn: true});
         sendRpcMessage("onChatMessage", [text]);
     }

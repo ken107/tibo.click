@@ -66,9 +66,15 @@
             }
         </script>
     </head>
-    <body bind-var-can-play-audio="false" bind-event-click="#canPlayAudio = true">
+    <body bind-var-can-chat="#buddy.connected"
+        bind-var-show-chat="true"
+        bind-var-can-play-audio="false"
+        bind-statement-1="if (#chatLog.length) #showChat = true"
+        bind-event-click="#canPlayAudio = true">
+
         <video muted autoplay bind-statement-1="if (#buddy.videoTrack) #buddy.videoTrack.attach(thisElem)"></video>
         <audio autoplay bind-statement-1="if (#buddy.audioTrack && #canPlayAudio) #buddy.audioTrack.attach(thisElem)"></audio>
+
         <div class="control-panel">
             <div class="user-list">
                 <div class="user">
@@ -108,15 +114,21 @@
                 <button type="button" class="btn btn-sm btn-primary"
                     bind-repeater-if="#buddy.connected && !#buddy.videoTrack ? 1 : 0"
                     bind-event-click="rtc.requestScreen()">Request screen</button>
+                <button type="button" class="btn btn-sm btn-primary"
+                    bind-repeater-if="#canChat ? 1 : 0"
+                    bind-event-click="#showChat = !#showChat">{{#showChat ? 'Hide' : 'Show'}} chat</button>
             </div>
-            <div class="chat-log">
+            <div class="chat-log" bind-statement-1="$(thisElem).toggle(!!#showChat)">
                 <div bind-repeater-i="#chatLog.length" bind-var-entry="#chatLog[#i]">
                     <u>{{#entry.isOwn ? "Me" : "Customer"}}</u>: {{#entry.text}}</div>
             </div>
-            <form class="chat-input" bind-event-submit="rtc.sendChat(thisElem.message.value); thisElem.message.value=''; return false">
+            <form class="chat-input" bind-statement-1="$(thisElem).toggle(!!#showChat)"
+                bind-event-submit="rtc.sendChat(thisElem.message.value); thisElem.message.value=''; return false">
                 <div class="input-group">
-                    <input type="text" name="message" class="form-control" autocomplete="off">
-                    <button type="submit" class="btn btn-outline-secondary">Send</button>
+                    <input type="text" name="message" class="form-control" autocomplete="off"
+                        bind-statement-1="thisElem.disabled = !#canChat">
+                    <button type="submit" class="btn btn-outline-secondary"
+                        bind-statement-1="thisElem.disabled = !#canChat">Send</button>
                 </div>
             </form>
         </div>
