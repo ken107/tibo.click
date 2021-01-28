@@ -39,14 +39,14 @@
                 .then(token => rtc.connect(token))
 
             rtc.setRpcHandler("onRequestAudio", function() {
-                confirmDialog.show("John would like to have a voice conversation, do you accept?  (this will turn on your microphone)")
+                confirmDialog.show(getI18n("requestAudioConfirmation"))
                     .then(granted => {
                         if (granted) rtc.publishAudio();
                     })
             })
 
             rtc.setRpcHandler("onRequestScreen", function() {
-                confirmDialog.show("John would like to see your computer screen, do you accept?")
+                confirmDialog.show(getI18n("requestScreenConfirmation"))
                     .then(granted => {
                         if (granted) rtc.publishScreen();
                     })
@@ -84,27 +84,27 @@
                     <div class="user">
                         <span class="connect-status"
                             bind-var-tooltip="new bootstrap.Tooltip(thisElem)"
-                            bind-statement-2="$(thisElem).attr('data-bs-original-title', #connected ? 'online' : 'offline')"
+                            bind-statement-2="$(thisElem).attr('data-bs-original-title', #connected ? getI18n('onlineStatus') : getI18n('offlineStatus'))"
                             bind-statement-1="$(thisElem).toggleClass('active', !!#connected)">●</span>
                         <span class="ms-1 me-auto">Me</span>
                         <i class="material-icons audio-status"
                             bind-var-tooltip="new bootstrap.Tooltip(thisElem)"
-                            bind-statement-2="$(thisElem).attr('data-bs-original-title', #audioPublished ? 'microphone active' : 'microphone off')"
+                            bind-statement-2="$(thisElem).attr('data-bs-original-title', #audioPublished ? getI18n('micActiveStatus') : getI18n('micInactiveStatus'))"
                             bind-statement-1="$(thisElem).toggleClass('active', !!#audioPublished)">mic</i>
                         <i class="material-icons screenshare-status"
                             bind-var-tooltip="new bootstrap.Tooltip(thisElem)"
-                            bind-statement-2="$(thisElem).attr('data-bs-original-title', #screenPublished ? 'screen shared' : 'screen not shared')"
+                            bind-statement-2="$(thisElem).attr('data-bs-original-title', #screenPublished ? getI18n('screenSharedStatus') : getI18n('screenNotSharedStatus'))"
                             bind-statement-1="$(thisElem).toggleClass('active', !!#screenPublished)">desktop_windows</i>
                     </div>
                     <div class="user">
                         <span class="connect-status"
                             bind-var-tooltip="new bootstrap.Tooltip(thisElem)"
-                            bind-statement-2="$(thisElem).attr('data-bs-original-title', #buddy.connected ? 'online' : 'offline')"
+                            bind-statement-2="$(thisElem).attr('data-bs-original-title', #buddy.connected ? getI18n('onlineStatus') : getI18n('offlineStatus'))"
                             bind-statement-1="$(thisElem).toggleClass('active', !!#buddy.connected)">●</span>
                         <span class="ms-1 me-auto">John</span>
                         <i class="material-icons audio-status"
                             bind-var-tooltip="new bootstrap.Tooltip(thisElem)"
-                            bind-statement-2="$(thisElem).attr('data-bs-original-title', #buddy.audioTrack ? 'microphone active' : 'microphone off')"
+                            bind-statement-2="$(thisElem).attr('data-bs-original-title', #buddy.audioTrack ? getI18n('micActiveStatus') : getI18n('micInactiveStatus'))"
                             bind-statement-1="$(thisElem).toggleClass('active', !!#buddy.audioTrack)">mic</i>
                     </div>
                 </div>
@@ -117,7 +117,7 @@
                         <input type="text" name="message" class="form-control" autocomplete="off"
                             bind-statement-1="thisElem.disabled = !#canChat">
                         <button type="submit" class="btn btn-primary"
-                            bind-statement-1="thisElem.disabled = !#canChat">Send</button>
+                            bind-statement-1="thisElem.disabled = !#canChat">{{getI18n("sendButton")}}</button>
                     </div>
                 </form>
             </div>
@@ -125,7 +125,7 @@
 
         <div class="fullscreen-center" style="background-color: black; opacity: .5"
             bind-repeater-if="#buddy.audioTrack && !#canPlayAudio && !#confirmDialog.visible ? 1 : 0">
-            <div style="font-size: xx-large; color: white">Click to Continue</div>
+            <div style="font-size: xx-large; color: white">{{getI18n("clickToContinueText")}}</div>
         </div>
 
         <div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
@@ -133,14 +133,14 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Confirm</h5>
+                        <h5 class="modal-title">{{getI18n("confirmDialogTitle")}}</h5>
                     </div>
                     <div class="modal-body">
                         {{#confirmDialog.message}}
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-primary" bind-event-click="confirmDialog.fulfill(true)">OK</button>
-                        <button type="button" class="btn btn-secondary" bind-event-click="confirmDialog.fulfill(false)">Cancel</button>
+                        <button type="button" class="btn btn-primary" bind-event-click="confirmDialog.fulfill(true)">{{getI18n("confirmDialogOkButton")}}</button>
+                        <button type="button" class="btn btn-secondary" bind-event-click="confirmDialog.fulfill(false)">{{getI18n("confirmDialogCancelButton")}}</button>
                     </div>
                 </div>
             </div>

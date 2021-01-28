@@ -69,7 +69,7 @@
                         this.copiedTimer = setTimeout(() => this.copiedTimer = null, 2000);
                     }
                     catch (err) {
-                        alert("Oops, couldn't copy. Please right click the textbox and do it manually.");
+                        alert(getI18n("couldNotCopyText"));
                     }
                 }
             }
@@ -89,43 +89,43 @@
                 <div class="user">
                     <span class="connect-status"
                         bind-var-tooltip="new bootstrap.Tooltip(thisElem)"
-                        bind-statement-2="$(thisElem).attr('data-bs-original-title', #connected ? 'online' : 'offline')"
+                        bind-statement-2="$(thisElem).attr('data-bs-original-title', #connected ? getI18n('onlineStatus') : getI18n('offlineStatus'))"
                         bind-statement-1="$(thisElem).toggleClass('active', !!#connected)">●</span>
                     <div class="ms-1 me-auto">Me</div>
                     <i class="material-icons audio-status"
                         bind-var-tooltip="new bootstrap.Tooltip(thisElem)"
-                        bind-statement-2="$(thisElem).attr('data-bs-original-title', #audioPublished ? 'microphone active' : 'microphone off')"
+                        bind-statement-2="$(thisElem).attr('data-bs-original-title', #audioPublished ? getI18n('micActiveStatus') : getI18n('micInactiveStatus'))"
                         bind-statement-1="$(thisElem).toggleClass('active', !!#audioPublished)">mic</i>
                 </div>
                 <div class="user">
                     <span class="connect-status"
                         bind-var-tooltip="new bootstrap.Tooltip(thisElem)"
-                        bind-statement-2="$(thisElem).attr('data-bs-original-title', #buddy.connected ? 'online' : 'offline')"
+                        bind-statement-2="$(thisElem).attr('data-bs-original-title', #buddy.connected ? getI18n('onlineStatus') : getI18n('offlineStatus'))"
                         bind-statement-1="$(thisElem).toggleClass('active', !!#buddy.connected)">●</span>
                     <div class="ms-1 me-auto">Customer</div>
                     <i class="material-icons audio-status"
                         bind-var-tooltip="new bootstrap.Tooltip(thisElem)"
-                        bind-statement-2="$(thisElem).attr('data-bs-original-title', #buddy.audioTrack ? 'microphone active' : 'microphone off')"
+                        bind-statement-2="$(thisElem).attr('data-bs-original-title', #buddy.audioTrack ? getI18n('micActiveStatus') : getI18n('micInactiveStatus'))"
                         bind-statement-1="$(thisElem).toggleClass('active', !!#buddy.audioTrack)">mic</i>
                     <i class="material-icons screenshare-status"
                         bind-var-tooltip="new bootstrap.Tooltip(thisElem)"
-                        bind-statement-2="$(thisElem).attr('data-bs-original-title', #buddy.videoTrack ? 'screen shared' : 'screen not shared')"
+                        bind-statement-2="$(thisElem).attr('data-bs-original-title', #buddy.videoTrack ? getI18n('screenSharedStatus') : getI18n('screenNotSharedStatus'))"
                         bind-statement-1="$(thisElem).toggleClass('active', !!#buddy.videoTrack)">desktop_windows</i>
                 </div>
             </div>
             <div class="buttons">
                 <button type="button" class="btn btn-sm btn-primary"
                     bind-repeater-if="#buddy.connected ? 0 : 1"
-                    bind-event-click="inviteDialog.show()">Invite</button>
+                    bind-event-click="inviteDialog.show()">{{getI18n("inviteButton")}}</button>
                 <button type="button" class="btn btn-sm btn-primary"
                     bind-repeater-if="#buddy.connected && (!#audioPublished || !#buddy.audioTrack) ? 1 : 0"
-                    bind-event-click="this.requestAudio()">Talk</button>
+                    bind-event-click="this.requestAudio()">{{getI18n("talkButton")}}</button>
                 <button type="button" class="btn btn-sm btn-primary"
                     bind-repeater-if="#buddy.connected && !#buddy.videoTrack ? 1 : 0"
-                    bind-event-click="this.requestScreen()">Request screen</button>
+                    bind-event-click="this.requestScreen()">{{getI18n("requestScreenButton")}}</button>
                 <button type="button" class="btn btn-sm btn-primary"
                     bind-repeater-if="#canChat ? 1 : 0"
-                    bind-event-click="#showChat = !#showChat">{{#showChat ? 'Hide' : 'Show'}} chat</button>
+                    bind-event-click="#showChat = !#showChat">{{#showChat ? getI18n("hideChatButton") : getI18n("showChatButton")}}</button>
             </div>
             <div class="chat-log" bind-statement-1="$(thisElem).toggle(!!#showChat)">
                 <div bind-repeater-i="#chatLog.length" bind-var-entry="#chatLog[#i]">
@@ -137,7 +137,7 @@
                     <input type="text" name="message" class="form-control" autocomplete="off"
                         bind-statement-1="thisElem.disabled = !#canChat">
                     <button type="submit" class="btn btn-outline-secondary"
-                        bind-statement-1="thisElem.disabled = !#canChat">Send</button>
+                        bind-statement-1="thisElem.disabled = !#canChat">{{getI18n("sendButton")}}</button>
                 </div>
             </form>
         </div>
@@ -148,24 +148,24 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Invite</h5>
+                        <h5 class="modal-title">{{getI18n("inviteDialogTitle")}}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
                         <div>
-                            <strong>Share a link</strong>
+                            <strong>{{getI18n("shareLinkHeading")}}</strong>
                             <div class="input-group">
                                 <input type="text" class="form-control" bind-statement-1="thisElem.value = #inviteDialog.link">
                                 <button type="button" class="btn btn-secondary" bind-event-click="inviteDialog.copyLink(thisElem.previousElementSibling)">
                                     <i class="material-icons" style="font-size: 1em">content_copy</i>
                                 </button>
                             </div>
-                            <div class="text-success" bind-repeater-if="#inviteDialog.copiedTimer ? 1 : 0">copied</div>
+                            <div class="text-success" bind-repeater-if="#inviteDialog.copiedTimer ? 1 : 0">{{getI18n("copiedText")}}</div>
                         </div>
                         <div class="mt-4">
-                            <strong>Share a code</strong>
+                            <strong>{{getI18n("shareCodeHeading")}}</strong>
                             <div class="invitation-code">{{#inviteDialog.invitationCode}}</div>
-                            <div class="text-muted">This code is valid for 5 minutes.</div>
+                            <div class="text-muted">{{getI18n("codeExpirationText")}}</div>
                         </div>
                     </div>
                 </div>

@@ -26,9 +26,9 @@ function callService(method, args) {
             data: JSON.stringify({method: method, args: args}),
             dataType: "json",
             success: fulfill,
-            error: function(xhr) {
-                console.log(xhr.response);
-                reject(new Error("Service unavailable"));
+            error: function(xhr, textStatus, errorThrown) {
+                console.log(textStatus, errorThrown, xhr.responseText);
+                reject(new Error(xhr.responseText ? xhr.responseText.slice(0,100) : "Service unavailable"));
             }
         })
     })
@@ -42,6 +42,61 @@ const i18nMessages = {
         inviteCodePlaceholder: "Enter Invite Code",
         startSessionText: "Start a new support session",
         startButton: "Start",
+        couldNotCopyText: "Please right click on the textbox and choose 'Copy'",
+        inviteButton: "Invite",
+        talkButton: "Talk",
+        requestScreenButton: "Request screen",
+        hideChatButton: "Hide chat",
+        showChatButton: "Show chat",
+        sendButton: "Send",
+        inviteDialogTitle: "Invite",
+        shareLinkHeading: "Share a link",
+        shareCodeHeading: "Share a code",
+        copiedText: "copied",
+        codeExpirationText: "This code is valid for 5 minutes.",
+        onlineStatus: "online",
+        offlineStatus: "offline",
+        micActiveStatus: "microphone active",
+        micInactiveStatus: "microphone off",
+        screenSharedStatus: "screen shared",
+        screenNotSharedStatus: "screen not shared",
+        clickToContinueText: "Click to Continue",
+        confirmDialogTitle: "Confirm",
+        confirmDialogOkButton: "Accept",
+        confirmDialogCancelButton: "Deny",
+        requestAudioConfirmation: "John would like to start a voice conversation, do you accept?  (this will turn on your microphone)",
+        requestScreenConfirmation: "John would like to see your computer screen, do you accept?",
+    },
+    "vi": {
+        joinSessionText: "Gia nhập phiên trợ giúp",
+        joinButton: "Nhập",
+        inviteCodePlaceholder: "Mã mời",
+        startSessionText: "Bắt đầu một phiên trợ giúp mới",
+        startButton: "Bắt đầu",
+        couldNotCopyText: "Hãy nhấp chuột phải trên hộp văn bản và chọn 'Sao chép'",
+        inviteButton: "Mời tham gia",
+        talkButton: "Nói chuyện",
+        requestScreenButton: "Xem màn hình",
+        hideChatButton: "Tắt chat",
+        showChatButton: "Mở chat",
+        sendButton: "Gửi",
+        inviteDialogTitle: "Mời tham gia",
+        shareLinkHeading: "Gửi liên kết",
+        shareCodeHeading: "Gửi mã mời",
+        copiedText: "đã sao chép",
+        codeExpirationText: "Mã mời sẽ có hiệu lực trong vòng 5 phút.",
+        onlineStatus: "có mặt",
+        offlineStatus: "vắng mặt",
+        micActiveStatus: "micro đang mở",
+        micInactiveStatus: "micro đã tắt",
+        screenSharedStatus: "đang cho xem màn hình",
+        screenNotSharedStatus: "không cho xem màn hình",
+        clickToContinueText: "Bấm để kích hoạt",
+        confirmDialogTitle: "Xác nhận",
+        confirmDialogOkButton: "Đồng ý",
+        confirmDialogCancelButton: "Không",
+        requestAudioConfirmation: "John muốn nói chuyện qua micro với bạn. Bạn có đồng ý không?",
+        requestScreenConfirmation: "John muốn xem màn hình của bạn. Bạn có đồng ý không?",
     }
 }
 
