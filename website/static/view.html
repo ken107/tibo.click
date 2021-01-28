@@ -46,14 +46,14 @@
                 .catch(err => alert(err.message))
 
             rtc.setRpcHandler("onRequestAudio", function() {
-                confirmDialog.show(getI18n("requestAudioConfirmation"))
+                confirmDialog.show(getI18np("requestAudioConfirmation", {hostName}))
                     .then(granted => {
                         if (granted) rtc.publishAudio();
                     })
             })
 
             rtc.setRpcHandler("onRequestScreen", function() {
-                confirmDialog.show(getI18n("requestScreenConfirmation"))
+                confirmDialog.show(getI18np("requestScreenConfirmation", {hostName}))
                     .then(granted => {
                         if (granted) rtc.publishScreen();
                     })

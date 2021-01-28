@@ -64,8 +64,8 @@ const i18nMessages = {
         confirmDialogTitle: "Confirm",
         confirmDialogOkButton: "Accept",
         confirmDialogCancelButton: "Deny",
-        requestAudioConfirmation: "John would like to start a voice conversation, do you accept?  (this will turn on your microphone)",
-        requestScreenConfirmation: "John would like to see your computer screen, do you accept?",
+        requestAudioConfirmation: "{hostName} would like to start a voice conversation, do you accept?  (this will turn on your microphone)",
+        requestScreenConfirmation: "{hostName} would like to see your computer screen, do you accept?",
         missingInviteCodeError: "Please enter the invitation code",
         missingHostNameError: "Please enter a name",
         serviceUnavailableError: "Service is temporarily unavailable, please try again later",
@@ -103,8 +103,8 @@ const i18nMessages = {
         confirmDialogTitle: "Xác nhận",
         confirmDialogOkButton: "Đồng ý",
         confirmDialogCancelButton: "Không",
-        requestAudioConfirmation: "John muốn nói chuyện qua micro với bạn. Bạn có đồng ý không?",
-        requestScreenConfirmation: "John muốn xem màn hình của bạn. Bạn có đồng ý không?",
+        requestAudioConfirmation: "{hostName} muốn nói chuyện qua micro với bạn. Bạn có đồng ý không?",
+        requestScreenConfirmation: "{hostName} muốn xem màn hình của bạn. Bạn có đồng ý không?",
         missingInviteCodeError: "Xin điền mã mời",
         missingHostNameError: "Xin điền tên",
         serviceUnavailableError: "Dịch vụ đang bị lỗi, xin thử lại sau",
@@ -126,6 +126,10 @@ function getI18n(name) {
     }
     while (index > 0);
     return i18nMessages["en"][name] || name;
+}
+
+function getI18np(name, params) {
+    return getI18n(name).replace(/{\w+}/g, str => params[str.slice(1,-1)] || str);
 }
 
 
