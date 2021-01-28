@@ -3,6 +3,7 @@ import { jwt } from "twilio"
 import * as assert from "assert"
 
 interface Session {
+    hostName: string;
     controlToken: string;
     viewToken: string;
 }
@@ -16,10 +17,11 @@ const sessions: {[id: string]: Session|undefined} = {}
 const invitations: {[code: string]: Invitation|undefined} = {}
 
 
-export function createSession() {
+export function createSession(hostName: string) {
     const sessionId = generateSessionId();
     const room = sessionId;
     sessions[sessionId] = {
+        hostName,
         controlToken: createVideoAccessToken(room, "control"),
         viewToken: createVideoAccessToken(room, "view")
     }
@@ -28,12 +30,20 @@ export function createSession() {
 
 export function getControlToken(sessionId: string) {
     assert(sessionId, "Missing args");
-    return sessions[sessionId]?.controlToken
+    const session = sessions[sessionId];
+    return session && {
+        hostName: session.hostName,
+        token: session.controlToken,
+    }
 }
 
 export function getViewToken(sessionId: string) {
     assert(sessionId, "Missing args");
-    return sessions[sessionId]?.viewToken
+    const session = sessions[sessionId];
+    return session && {
+        hostName: session.hostName,
+        token: session.viewToken,
+    }
 }
 
 

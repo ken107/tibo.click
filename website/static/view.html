@@ -35,8 +35,15 @@
         <script src="../js/common.js"></script>
         <script src="../js/rtc.js"></script>
         <script>
+            hostName = "Host";
+
             callService("getViewToken", [queryString.s])
-                .then(token => rtc.connect(token))
+                .then(session => {
+                    if (!session) throw new Error(getI18n("sessionNotFoundError"));
+                    hostName = session.hostName;
+                    return rtc.connect(session.token);
+                })
+                .catch(err => alert(err.message))
 
             rtc.setRpcHandler("onRequestAudio", function() {
                 confirmDialog.show(getI18n("requestAudioConfirmation"))
@@ -86,7 +93,7 @@
                             bind-var-tooltip="new bootstrap.Tooltip(thisElem)"
                             bind-statement-2="$(thisElem).attr('data-bs-original-title', #connected ? getI18n('onlineStatus') : getI18n('offlineStatus'))"
                             bind-statement-1="$(thisElem).toggleClass('active', !!#connected)">●</span>
-                        <span class="ms-1 me-auto">Me</span>
+                        <span class="ms-1 me-auto">{{getI18n("selfPronoun")}}</span>
                         <i class="material-icons audio-status"
                             bind-var-tooltip="new bootstrap.Tooltip(thisElem)"
                             bind-statement-2="$(thisElem).attr('data-bs-original-title', #audioPublished ? getI18n('micActiveStatus') : getI18n('micInactiveStatus'))"
@@ -101,7 +108,7 @@
                             bind-var-tooltip="new bootstrap.Tooltip(thisElem)"
                             bind-statement-2="$(thisElem).attr('data-bs-original-title', #buddy.connected ? getI18n('onlineStatus') : getI18n('offlineStatus'))"
                             bind-statement-1="$(thisElem).toggleClass('active', !!#buddy.connected)">●</span>
-                        <span class="ms-1 me-auto">John</span>
+                        <span class="ms-1 me-auto">{{#hostName}}</span>
                         <i class="material-icons audio-status"
                             bind-var-tooltip="new bootstrap.Tooltip(thisElem)"
                             bind-statement-2="$(thisElem).attr('data-bs-original-title', #buddy.audioTrack ? getI18n('micActiveStatus') : getI18n('micInactiveStatus'))"
@@ -110,7 +117,7 @@
                 </div>
                 <div class="chat-log">
                     <div bind-repeater-i="#chatLog.length" bind-var-entry="#chatLog[#i]">
-                        <u>{{#entry.isOwn ? "Me" : "John"}}</u>: {{#entry.text}}</div>
+                        <u>{{#entry.isOwn ? getI18n("selfPronoun") : #hostName}}</u>: {{#entry.text}}</div>
                 </div>
                 <form class="chat-input" bind-event-submit="rtc.sendChat(thisElem.message.value); thisElem.message.value=''; return false">
                     <div class="input-group">

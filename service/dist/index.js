@@ -22,7 +22,7 @@ async function handleVemoRequest(req, res) {
     const { method, args } = req.body;
     try {
         const result = await handleVemoCall(method, args);
-        res.json(result);
+        res.json(result || null);
     }
     catch (err) {
         console.error(method, args, err);
@@ -31,7 +31,7 @@ async function handleVemoRequest(req, res) {
 }
 function handleVemoCall(method, args) {
     switch (method) {
-        case "createSession": return vemo.createSession();
+        case "createSession": return vemo.createSession(args[0]);
         case "getControlToken": return vemo.getControlToken(args[0]);
         case "getViewToken": return vemo.getViewToken(args[0]);
         case "createInvitation": return vemo.createInvitation(args[0]);

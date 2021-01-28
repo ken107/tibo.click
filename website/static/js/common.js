@@ -28,7 +28,7 @@ function callService(method, args) {
             success: fulfill,
             error: function(xhr, textStatus, errorThrown) {
                 console.log(textStatus, errorThrown, xhr.responseText);
-                reject(new Error(xhr.responseText ? xhr.responseText.slice(0,100) : "Service unavailable"));
+                reject(new Error(getI18n("serviceUnavailableError")));
             }
         })
     })
@@ -66,12 +66,20 @@ const i18nMessages = {
         confirmDialogCancelButton: "Deny",
         requestAudioConfirmation: "John would like to start a voice conversation, do you accept?  (this will turn on your microphone)",
         requestScreenConfirmation: "John would like to see your computer screen, do you accept?",
+        missingInviteCodeError: "Please enter the invitation code",
+        missingHostNameError: "Please enter a name",
+        serviceUnavailableError: "Service is temporarily unavailable, please try again later",
+        invalidInviteCodeError: "The invitation code you entered is no longer valid",
+        sessionNotFoundError: "This support session has ended",
+        selfPronoun: "You",
+        customerPronoun: "Customer",
+        hostNamePlaceholder: "Your name",
     },
     "vi": {
-        joinSessionText: "Gia nhập phiên trợ giúp",
+        joinSessionText: "Gia nhập phiên hỗ trợ",
         joinButton: "Nhập",
         inviteCodePlaceholder: "Mã mời",
-        startSessionText: "Bắt đầu một phiên trợ giúp mới",
+        startSessionText: "Bắt đầu một phiên hỗ trợ mới",
         startButton: "Bắt đầu",
         couldNotCopyText: "Hãy nhấp chuột phải trên hộp văn bản và chọn 'Sao chép'",
         inviteButton: "Mời tham gia",
@@ -97,6 +105,14 @@ const i18nMessages = {
         confirmDialogCancelButton: "Không",
         requestAudioConfirmation: "John muốn nói chuyện qua micro với bạn. Bạn có đồng ý không?",
         requestScreenConfirmation: "John muốn xem màn hình của bạn. Bạn có đồng ý không?",
+        missingInviteCodeError: "Xin điền mã mời",
+        missingHostNameError: "Xin điền tên",
+        serviceUnavailableError: "Dịch vụ đang bị lỗi, xin thử lại sau",
+        invalidInviteCodeError: "Mã mời không còn hiệu lực",
+        sessionNotFoundError: "Phiên hỗ trợ này đã kết thúc",
+        selfPronoun: "Tôi",
+        customerPronoun: "Khách Hàng",
+        hostNamePlaceholder: "Tên của bạn"
     }
 }
 

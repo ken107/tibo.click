@@ -39,9 +39,15 @@
         <script src="../js/rtc.js"></script>
         <script>
             const sessionId = queryString.s;
+            hostName = getI18n("selfPronoun");
 
             callService("getControlToken", [sessionId])
-                .then(token => rtc.connect(token))
+                .then(session => {
+                    if (!session) throw new Error(getI18n("sessionNotFoundError"));
+                    hostName = session.hostName;
+                    return rtc.connect(session.token);
+                })
+                .catch(err => alert(err.message))
 
             function requestAudio() {
                 rtc.publishAudio();
@@ -91,7 +97,7 @@
                         bind-var-tooltip="new bootstrap.Tooltip(thisElem)"
                         bind-statement-2="$(thisElem).attr('data-bs-original-title', #connected ? getI18n('onlineStatus') : getI18n('offlineStatus'))"
                         bind-statement-1="$(thisElem).toggleClass('active', !!#connected)">●</span>
-                    <div class="ms-1 me-auto">Me</div>
+                    <div class="ms-1 me-auto">{{#hostName}}</div>
                     <i class="material-icons audio-status"
                         bind-var-tooltip="new bootstrap.Tooltip(thisElem)"
                         bind-statement-2="$(thisElem).attr('data-bs-original-title', #audioPublished ? getI18n('micActiveStatus') : getI18n('micInactiveStatus'))"
@@ -102,7 +108,7 @@
                         bind-var-tooltip="new bootstrap.Tooltip(thisElem)"
                         bind-statement-2="$(thisElem).attr('data-bs-original-title', #buddy.connected ? getI18n('onlineStatus') : getI18n('offlineStatus'))"
                         bind-statement-1="$(thisElem).toggleClass('active', !!#buddy.connected)">●</span>
-                    <div class="ms-1 me-auto">Customer</div>
+                    <div class="ms-1 me-auto">{{getI18n("customerPronoun")}}</div>
                     <i class="material-icons audio-status"
                         bind-var-tooltip="new bootstrap.Tooltip(thisElem)"
                         bind-statement-2="$(thisElem).attr('data-bs-original-title', #buddy.audioTrack ? getI18n('micActiveStatus') : getI18n('micInactiveStatus'))"
@@ -129,7 +135,7 @@
             </div>
             <div class="chat-log" bind-statement-1="$(thisElem).toggle(!!#showChat)">
                 <div bind-repeater-i="#chatLog.length" bind-var-entry="#chatLog[#i]">
-                    <u>{{#entry.isOwn ? "Me" : "Customer"}}</u>: {{#entry.text}}</div>
+                    <u>{{#entry.isOwn ? getI18n("selfPronoun") : getI18n("customerPronoun")}}</u>: {{#entry.text}}</div>
             </div>
             <form class="chat-input" bind-statement-1="$(thisElem).toggle(!!#showChat)"
                 bind-event-submit="rtc.sendChat(thisElem.message.value); thisElem.message.value=''; return false">

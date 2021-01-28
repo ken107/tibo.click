@@ -48,9 +48,11 @@
 
             function joinSession(inviteCode) {
                 clearErrors();
+                if (!inviteCode.trim()) return joinError = {message: getI18n("missingInviteCodeError")};
                 progress++;
                 callService("getSessionIdForInvitation", [inviteCode])
                     .then(function(sessionId) {
+                        if (!sessionId) throw new Error(getI18n("invalidInviteCodeError"));
                         location.href = "view.html?s=" + sessionId + "&l=" + (queryString.l || "en");
                     })
                     .catch(function(err) {
@@ -59,10 +61,11 @@
                     })
             }
 
-            function startSession() {
+            function startSession(hostName) {
                 clearErrors();
+                if (!hostName.trim()) return startError = {message: getI18n("missingHostNameError")};
                 progress++;
-                callService("createSession")
+                callService("createSession", [hostName])
                     .then(function(sessionId) {
                         location.href = "control.html?s=" + sessionId + "&l=" + (queryString.l || "en");
                     })
@@ -115,9 +118,12 @@
                         <label for="startRadio">{{getI18n("startSessionText")}}</label>
                     </h5>
                     <div bind-repeater-if="#action == 'START' ? 1 : 0">
-                        <form bind-event-submit="this.startSession(); return false">
+                        <form bind-event-submit="this.startSession(thisElem.hostName.value); return false">
                             <div class="alert alert-danger" bind-repeater-if="#startError ? 1 : 0">{{#startError.message}}</div>
-                            <button type="submit" class="btn btn-primary">{{getI18n("startButton")}}</button>
+                            <div class="input-group">
+                                <input type="text" name="hostName" class="form-control" bind-statement-1="thisElem.placeholder = getI18n('hostNamePlaceholder')">
+                                <button type="submit" class="btn btn-primary">{{getI18n("startButton")}}</button>
+                            </div>
                         </form>
                     </div>
                 </div>

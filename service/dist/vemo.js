@@ -6,10 +6,11 @@ const twilio_1 = require("twilio");
 const assert = require("assert");
 const sessions = {};
 const invitations = {};
-function createSession() {
+function createSession(hostName) {
     const sessionId = generateSessionId();
     const room = sessionId;
     sessions[sessionId] = {
+        hostName,
         controlToken: createVideoAccessToken(room, "control"),
         viewToken: createVideoAccessToken(room, "view")
     };
@@ -17,15 +18,21 @@ function createSession() {
 }
 exports.createSession = createSession;
 function getControlToken(sessionId) {
-    var _a;
     assert(sessionId, "Missing args");
-    return (_a = sessions[sessionId]) === null || _a === void 0 ? void 0 : _a.controlToken;
+    const session = sessions[sessionId];
+    return session && {
+        hostName: session.hostName,
+        token: session.controlToken,
+    };
 }
 exports.getControlToken = getControlToken;
 function getViewToken(sessionId) {
-    var _a;
     assert(sessionId, "Missing args");
-    return (_a = sessions[sessionId]) === null || _a === void 0 ? void 0 : _a.viewToken;
+    const session = sessions[sessionId];
+    return session && {
+        hostName: session.hostName,
+        token: session.viewToken,
+    };
 }
 exports.getViewToken = getViewToken;
 function createInvitation(sessionId) {
