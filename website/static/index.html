@@ -51,7 +51,7 @@
                 progress++;
                 callService("getSessionIdForInvitation", [inviteCode])
                     .then(function(sessionId) {
-                        location.href = "view.html?s=" + sessionId;
+                        location.href = "view.html?s=" + sessionId + "&l=" + (queryString.l || "en");
                     })
                     .catch(function(err) {
                         progress--;
@@ -64,18 +64,31 @@
                 progress++;
                 callService("createSession")
                     .then(function(sessionId) {
-                        location.href = "control.html?s=" + sessionId;
+                        location.href = "control.html?s=" + sessionId + "&l=" + (queryString.l || "en");
                     })
                     .catch(function(err) {
                         progress--;
                         startError = err;
                     })
             }
+
+            function setSelectedLanguage(select, lang) {
+                if ($("option", select).get().some(opt => opt.value == lang)) select.value = lang;
+            }
         </script>
     </head>
     <body bind-var-action="'JOIN'" bind-event-change="if ($(event.target).is('[name=action]')) #action = event.target.value">
         <div class="container">
-            <h1>Vemo</h1>
+            <div class="header d-flex">
+                <h1>Vemo</h1>
+                <form class="ms-auto form-inline">
+                    <select class="form-control" bind-statement-1="if (queryString.l) this.setSelectedLanguage(thisElem, queryString.l)"
+                        bind-event-change="location.href = location.pathname + '?l=' + thisElem.value">
+                        <option value="en">🇬🇧&nbsp;&nbsp;English</option>
+                        <option value="vi">🇻🇳&nbsp;&nbsp;Tiếng Việt</option>
+                    </select>
+                </form>
+            </div>
 
             <div class="card">
                 <div class="card-body">

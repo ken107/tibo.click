@@ -54,7 +54,7 @@
 
             inviteDialog = {
                 visible: false,
-                link: location.protocol + "//" + location.host + "/view.html?s=" + sessionId,
+                link: location.protocol + "//" + location.host + "/view.html?s=" + sessionId + "&l=" + (queryString.l || "en"),
                 invitationCode: null,
                 copiedTimer: null,
                 show: function() {
