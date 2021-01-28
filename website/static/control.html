@@ -43,6 +43,15 @@
             callService("getControlToken", [sessionId])
                 .then(token => rtc.connect(token))
 
+            function requestAudio() {
+                rtc.publishAudio();
+                rtc.sendRpcMessage("onRequestAudio");
+            }
+
+            function requestScreen() {
+                rtc.sendRpcMessage("onRequestScreen");
+            }
+
             inviteDialog = {
                 visible: false,
                 link: location.protocol + "//" + location.host + "/view.html?s=" + sessionId,
@@ -110,10 +119,10 @@
                     bind-event-click="inviteDialog.show()">Invite</button>
                 <button type="button" class="btn btn-sm btn-primary"
                     bind-repeater-if="#buddy.connected && (!#audioPublished || !#buddy.audioTrack) ? 1 : 0"
-                    bind-event-click="rtc.startAudioConversation()">Talk</button>
+                    bind-event-click="this.requestAudio()">Talk</button>
                 <button type="button" class="btn btn-sm btn-primary"
                     bind-repeater-if="#buddy.connected && !#buddy.videoTrack ? 1 : 0"
-                    bind-event-click="rtc.requestScreen()">Request screen</button>
+                    bind-event-click="this.requestScreen()">Request screen</button>
                 <button type="button" class="btn btn-sm btn-primary"
                     bind-repeater-if="#canChat ? 1 : 0"
                     bind-event-click="#showChat = !#showChat">{{#showChat ? 'Hide' : 'Show'}} chat</button>
@@ -133,7 +142,7 @@
             </form>
         </div>
 
-        <div class="modal" tabindex="-1"
+        <div class="modal fade" tabindex="-1"
             bind-statement-1="$(thisElem).modal(#inviteDialog.visible ? 'show' : 'hide')"
             bind-event-hidden.bs.modal="#inviteDialog.visible = false">
             <div class="modal-dialog">

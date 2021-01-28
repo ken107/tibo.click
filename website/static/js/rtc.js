@@ -98,30 +98,6 @@ const rtc = (function() {
         onChatMessage: function(text) {
             chatLog.push({text});
         },
-        onRequestAudio: function() {
-            publishAudio();
-        },
-        onRequestScreen: function() {
-            if (!screenPublished) {
-                screenPublished = true;
-                navigator.mediaDevices.getDisplayMedia()
-                    .then(stream => stream.getTracks()[0])
-                    .then(mediaStreamTrack => {
-                        const localVideoTrack = new Twilio.Video.LocalVideoTrack(mediaStreamTrack);
-                        return room.localParticipant.publishTrack(localVideoTrack)
-                            .then(() => {
-                                mediaStreamTrack.addEventListener("ended", () => {
-                                    room.localParticipant.unpublishTrack(localVideoTrack);
-                                    screenPublished = false;
-                                })
-                            })
-                    })
-                    .catch(err => {
-                        console.error(err);
-                        screenPublished = false;
-                    })
-            }
-        }
     }
 
     function sendChat(text) {
@@ -142,13 +118,26 @@ const rtc = (function() {
         }
     }
 
-    function startAudioConversation() {
-        publishAudio();
-        sendRpcMessage("onRequestAudio");
-    }
-
-    function requestScreen() {
-        sendRpcMessage("onRequestScreen");
+    function publishScreen() {
+        if (!screenPublished) {
+            screenPublished = true;
+            navigator.mediaDevices.getDisplayMedia()
+                .then(stream => stream.getTracks()[0])
+                .then(mediaStreamTrack => {
+                    const localVideoTrack = new Twilio.Video.LocalVideoTrack(mediaStreamTrack);
+                    return room.localParticipant.publishTrack(localVideoTrack)
+                        .then(() => {
+                            mediaStreamTrack.addEventListener("ended", () => {
+                                room.localParticipant.unpublishTrack(localVideoTrack);
+                                screenPublished = false;
+                            })
+                        })
+                })
+                .catch(err => {
+                    console.error(err);
+                    screenPublished = false;
+                })
+        }
     }
 
     return {
@@ -156,7 +145,7 @@ const rtc = (function() {
         sendRpcMessage,
         setRpcHandler: (method, handler) => rpcHandlers[method] = handler,
         sendChat,
-        startAudioConversation,
-        requestScreen,
+        publishAudio,
+        publishScreen,
     }
 })();

@@ -37,6 +37,39 @@
         <script>
             callService("getViewToken", [queryString.s])
                 .then(token => rtc.connect(token))
+
+            rtc.setRpcHandler("onRequestAudio", function() {
+                confirmDialog.show("John would like to have a voice conversation, do you accept?  (this will turn on your microphone)")
+                    .then(granted => {
+                        if (granted) rtc.publishAudio();
+                    })
+            })
+
+            rtc.setRpcHandler("onRequestScreen", function() {
+                confirmDialog.show("John would like to see your computer screen, do you accept?")
+                    .then(granted => {
+                        if (granted) rtc.publishScreen();
+                    })
+            })
+
+            confirmDialog = {
+                visible: false,
+                message: null,
+                fulfill: null,
+                pending: null,
+                show: function(message) {
+                    return this.pending = Promise.resolve(this.pending)
+                        .then(() => {
+                            this.message = message;
+                            this.visible = true;
+                            return new Promise(f => this.fulfill = f);
+                        })
+                        .then(result => {
+                            this.visible = false;
+                            return result;
+                        })
+                },
+            }
         </script>
     </head>
     <body bind-var-can-chat="#buddy.connected"
@@ -90,8 +123,27 @@
             </div>
         </div>
 
-        <div class="fullscreen-center" style="background-color: black; opacity: .5" bind-repeater-if="#buddy.audioTrack && !#canPlayAudio ? 1 : 0">
+        <div class="fullscreen-center" style="background-color: black; opacity: .5"
+            bind-repeater-if="#buddy.audioTrack && !#canPlayAudio && !#confirmDialog.visible ? 1 : 0">
             <div style="font-size: xx-large; color: white">Click to Continue</div>
+        </div>
+
+        <div class="modal fade" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            bind-statement-1="$(thisElem).modal(#confirmDialog.visible ? 'show' : 'hide')">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Confirm</h5>
+                    </div>
+                    <div class="modal-body">
+                        {{#confirmDialog.message}}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" bind-event-click="confirmDialog.fulfill(true)">OK</button>
+                        <button type="button" class="btn btn-secondary" bind-event-click="confirmDialog.fulfill(false)">Cancel</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </body>
 </html>
