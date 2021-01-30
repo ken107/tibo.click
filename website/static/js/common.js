@@ -74,6 +74,9 @@ const i18nMessages = {
         selfPronoun: "You",
         customerPronoun: "Customer",
         hostNamePlaceholder: "Your name",
+        closeButton: "Close",
+        failNotificationTitle: "Request failed",
+        viewSystemInfoLink: "View system info",
     },
     "vi": {
         joinSessionText: "Gia nhập phiên hỗ trợ",
@@ -112,7 +115,10 @@ const i18nMessages = {
         sessionNotFoundError: "Phiên hỗ trợ này đã kết thúc",
         selfPronoun: "Tôi",
         customerPronoun: "Khách Hàng",
-        hostNamePlaceholder: "Tên của bạn"
+        hostNamePlaceholder: "Tên của bạn",
+        closeButton: "Đóng",
+        failNotificationTitle: "Yêu cầu không thành công",
+        viewSystemInfoLink: "Xem thông tin hệ thống",
     }
 }
 

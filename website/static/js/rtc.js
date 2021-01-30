@@ -113,19 +113,26 @@ const rtc = (function() {
     function publishAudio() {
         if (!audioPublished) {
             audioPublished = true;
-            Twilio.Video.createLocalAudioTrack()
+            return Twilio.Video.createLocalAudioTrack()
                 .then(track => room.localParticipant.publishTrack(track))
                 .catch(err => {
-                    console.error(err);
                     audioPublished = false;
+                    throw err;
                 })
+        }
+        else {
+            return Promise.resolve();
         }
     }
 
     function publishScreen() {
         if (!screenPublished) {
             screenPublished = true;
-            navigator.mediaDevices.getDisplayMedia()
+            return Promise.resolve()
+                .then(() => {
+                    if (!navigator.mediaDevices.getDisplayMedia) throw new Error("Browser doesn't support the Screen Capture API");
+                    return navigator.mediaDevices.getDisplayMedia();
+                })
                 .then(stream => stream.getTracks()[0])
                 .then(mediaStreamTrack => {
                     const localVideoTrack = new Twilio.Video.LocalVideoTrack(mediaStreamTrack);
@@ -138,9 +145,12 @@ const rtc = (function() {
                         })
                 })
                 .catch(err => {
-                    console.error(err);
                     screenPublished = false;
+                    throw err;
                 })
+        }
+        else {
+            return Promise.resolve();
         }
     }
 

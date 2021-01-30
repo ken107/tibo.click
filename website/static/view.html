@@ -48,16 +48,33 @@
             rtc.setRpcHandler("onRequestAudio", function() {
                 confirmDialog.show(getI18np("requestAudioConfirmation", {hostName}))
                     .then(granted => {
-                        if (granted) rtc.publishAudio();
+                        if (!granted) throw new Error("User did not accept the request");
+                        return rtc.publishAudio();
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        rtc.sendRpcMessage("onFailRequest", [{code: err.code, message: err.message}, getSystemInfo()]);
                     })
             })
 
             rtc.setRpcHandler("onRequestScreen", function() {
                 confirmDialog.show(getI18np("requestScreenConfirmation", {hostName}))
                     .then(granted => {
-                        if (granted) rtc.publishScreen();
+                        if (!granted) throw new Error("User did not accept the request");
+                        return rtc.publishScreen();
+                    })
+                    .catch(err => {
+                        console.error(err);
+                        rtc.sendRpcMessage("onFailRequest", [{code: err.code, message: err.message}, getSystemInfo()]);
                     })
             })
+
+            function getSystemInfo() {
+                return {
+                    platform: navigator.platform,
+                    userAgent: navigator.userAgent,
+                }
+            }
 
             confirmDialog = {
                 visible: false,

@@ -58,6 +58,10 @@
                 rtc.sendRpcMessage("onRequestScreen");
             }
 
+            rtc.setRpcHandler("onFailRequest", function(err, systemInfo) {
+                failNotification.show(err.code ? (err.code + " " + err.message) : err.message, systemInfo);
+            })
+
             inviteDialog = {
                 visible: false,
                 link: location.protocol + "//" + location.host + "/view.html?s=" + sessionId + "&l=" + (queryString.l || "en"),
@@ -77,6 +81,19 @@
                     catch (err) {
                         alert(getI18n("couldNotCopyText"));
                     }
+                }
+            }
+
+            failNotification = {
+                visible: false,
+                message: null,
+                systemInfo: null,
+                showSystemInfo: false,
+                show: function(message, systemInfo) {
+                    this.message = message;
+                    this.systemInfo = systemInfo;
+                    this.showSystemInfo = false;
+                    this.visible = true;
                 }
             }
         </script>
@@ -173,6 +190,30 @@
                             <div class="invitation-code">{{#inviteDialog.invitationCode}}</div>
                             <div class="text-muted">{{getI18n("codeExpirationText")}}</div>
                         </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" tabindex="-1"
+            bind-statement-1="$(thisElem).modal(#failNotification.visible ? 'show' : 'hide')"
+            bind-event-hidden.bs.modal="#failNotification.visible = false">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">{{getI18n("failNotificationTitle")}}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>{{#failNotification.message}}</p>
+                        <p bind-repeater-if="#failNotification.systemInfo ? 1 : 0">
+                            <a href="javascript:void(0)" bind-statement-1="$(thisElem).toggle(!#failNotification.showSystemInfo)"
+                                bind-event-click="#failNotification.showSystemInfo = true">{{getI18n("viewSystemInfoLink")}}</a>
+                            <pre bind-statement-1="$(thisElem).toggle(!!#failNotification.showSystemInfo)">{{JSON.stringify(#failNotification.systemInfo, null, 2)}}</pre>
+                        </p>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">{{getI18n("closeButton")}}</button>
                     </div>
                 </div>
             </div>
