@@ -16,9 +16,9 @@ const rtc = (function() {
     const localDataTrack = new Twilio.Video.LocalDataTrack();
 
     function connect(token) {
+        if (room) throw new Error("Already connected before");
         return Twilio.Video.connect(token, {tracks: [localDataTrack]})
             .then(function(result) {
-                if (room) throw new Error("Already connected before");
                 room = result;
                 connected = true;
 
@@ -82,6 +82,10 @@ const rtc = (function() {
             })
     }
 
+    function disconnect() {
+        if (room) room.disconnect();
+    }
+
     function sendRpcMessage(method, args) {
         localDataTrack.send(JSON.stringify({method, args}));
     }
@@ -142,6 +146,7 @@ const rtc = (function() {
 
     return {
         connect,
+        disconnect,
         sendRpcMessage,
         setRpcHandler: (method, handler) => rpcHandlers[method] = handler,
         sendChat,
@@ -149,3 +154,7 @@ const rtc = (function() {
         publishScreen,
     }
 })();
+
+
+window.addEventListener('beforeunload', () => rtc.disconnect())
+window.addEventListener('pagehide', () => rtc.disconnect())
