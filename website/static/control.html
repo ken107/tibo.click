@@ -150,7 +150,8 @@
                     bind-repeater-if="#canChat ? 1 : 0"
                     bind-event-click="#showChat = !#showChat">{{#showChat ? getI18n("hideChatButton") : getI18n("showChatButton")}}</button>
             </div>
-            <div class="chat-log" bind-statement-1="$(thisElem).toggle(!!#showChat)">
+            <div class="chat-log" bind-statement-1="$(thisElem).toggle(!!#showChat)"
+                bind-statement-2="if (#chatLog.length) setTimeout(() => thisElem.scrollTop = thisElem.scrollHeight, 0)">
                 <div bind-repeater-i="#chatLog.length" bind-var-entry="#chatLog[#i]">
                     <u>{{#entry.isOwn ? getI18n("selfPronoun") : getI18n("customerPronoun")}}</u>: {{#entry.text}}</div>
             </div>
