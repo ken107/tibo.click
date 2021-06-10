@@ -4,7 +4,7 @@
   "description": "Vemo.app website",
   "scripts": {
     "start": "http-server static",
-    "deploy": "aws s3 sync --profile yeppyadmin --delete --metadata-directive REPLACE --cache-control max-age=3600,public static s3://vemo-content/website"
+    "deploy": "aws s3 sync --delete --metadata-directive REPLACE --cache-control max-age=3600,public static s3://lsdsoftware-websites/tibo.click"
   },
   "author": "Vemo LLC <support@vemo.app>",
   "license": "ISC"
