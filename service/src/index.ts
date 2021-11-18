@@ -1,31 +1,16 @@
-import * as bodyParser from "body-parser"
-import * as Cors from "cors"
-import * as express from "express"
-import config from "./config"
-import * as vemo from "./vemo"
+import sb, { Message, MessageWithHeader } from "./common/service-broker";
+import "./common/service-manager";
+import config from "./config";
+import * as vemo from "./vemo";
 
-if (require.main == module) {
-    const app = express();
-    mount(app);
-    app.listen(config.listeningPort, () => console.log(`Service started on ${config.listeningPort}`))
-}
+sb.advertise(config.service, onRequest);
 
-export function mount(app: express.Express) {
-    console.warn("Vemo using unrestricted cors settings");
-    const cors = Cors();
-    app.options("/vemo", cors)
-    app.post("/vemo", cors, bodyParser.json(), handleVemoRequest)
-}
 
-async function handleVemoRequest(req: express.Request, res: express.Response) {
-    const { method, args } = req.body;
-    try {
-        const result = await handleVemoCall(method, args);
-        res.json(result || null);
-    }
-    catch(err) {
-        console.error(method, args, err);
-        res.sendStatus(500);
+async function onRequest(req: MessageWithHeader): Promise<Message> {
+    const { method, args } = req.header.method ? req.header : JSON.parse(<string>req.payload)
+    const result = await handleVemoCall(method, args);
+    return {
+        payload: JSON.stringify(result)
     }
 }
 

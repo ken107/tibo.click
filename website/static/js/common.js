@@ -15,23 +15,18 @@ function parseQueryString() {
 }
 
 
-const serviceUrl = "https://support.lsdsoftware.com/vemo";
-
 function callService(method, args) {
-    return new Promise(function(fulfill, reject) {
-        $.ajax({
-            method: "POST",
-            url: serviceUrl,
-            contentType: "application/json",
-            data: JSON.stringify({method: method, args: args}),
-            dataType: "json",
-            success: fulfill,
-            error: function(xhr, textStatus, errorThrown) {
-                console.log(textStatus, errorThrown, xhr.responseText);
-                reject(new Error(getI18n("serviceUnavailableError")));
-            }
-        })
-    })
+	return new Promise(function(fulfill, reject) {
+		$.ajax({
+			method: "POST",
+			url: "https://service.lsdsoftware.com/tibo",
+			contentType: "application/json",
+			data: JSON.stringify({method, args}),
+			dataType: "text",
+			success: text => fulfill(text ? JSON.parse(text) : null),
+			error: (xhr, textStatus, errorThrown) => reject(new Error(xhr.responseText || errorThrown || textStatus))
+		})
+	})
 }
 
 
