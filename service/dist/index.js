@@ -26,6 +26,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const logger_1 = __importDefault(require("./common/logger"));
 const service_broker_1 = __importDefault(require("./common/service-broker"));
 require("./common/service-manager");
 const config_1 = __importDefault(require("./config"));
@@ -33,18 +34,23 @@ const vemo = __importStar(require("./vemo"));
 service_broker_1.default.advertise(config_1.default.service, onRequest);
 async function onRequest(req) {
     const { method, args } = req.header.method ? req.header : JSON.parse(req.payload);
-    const result = await handleVemoCall(method, args);
-    return {
-        payload: JSON.stringify(result)
-    };
+    try {
+        const result = await handleVemoCall(method, args);
+        logger_1.default.debug(method, args, result);
+        return {
+            payload: JSON.stringify(result)
+        };
+    }
+    catch (err) {
+        logger_1.default.error(method, args, err);
+        throw err;
+    }
 }
 function handleVemoCall(method, args) {
     switch (method) {
         case "createSession": return vemo.createSession(args[0]);
-        case "getControlToken": return vemo.getControlToken(args[0]);
-        case "getViewToken": return vemo.getViewToken(args[0]);
         case "createInvitation": return vemo.createInvitation(args[0]);
-        case "getSessionIdForInvitation": return vemo.getSessionIdFromInvitation(args[0]);
+        case "getSessionFromInvitation": return vemo.getSessionFromInvitation(args[0]);
         default: throw new Error("Bad method");
     }
 }

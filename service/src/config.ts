@@ -1,12 +1,9 @@
-import dotenv from "dotenv"
-import assert from "assert"
+import assert from "assert";
+import dotenv from "dotenv";
 
 dotenv.config();
 
 assert(process.env.SERVICE_BROKER_URL, "Missing env SERVICE_BROKER_URL")
-if (!process.env.TWILIO_ACCOUNT_SID) throw "Missing env TWILIO_ACCOUNT_SID"
-if (!process.env.TWILIO_VIDEO_KEY) throw "Missing env TWILIO_VIDEO_KEY"
-if (!process.env.TWILIO_VIDEO_SECRET) throw "Missing env TWILIO_VIDEO_SECRET"
 
 
 export default {
@@ -22,10 +19,8 @@ export default {
         name: "tibo",
         capabilities: [
             "createSession-1.0",
-            "getControlToken-1.0",
-            "getViewToken-1.0",
             "createInvitation-1.0",
-            "getSessionIdForInvitation-1.0",
+            "getSessionFromInvitation-1.0",
         ],
         priority: Number(process.env.PRIORITY || 100)
     },
@@ -33,9 +28,4 @@ export default {
     // app
     debug: ["1", "true", "yes"].includes(process.env.DEBUG || ""),
     invitationTtl: 5*60*1000,
-    twilio: {
-        accountSid: process.env.TWILIO_ACCOUNT_SID,
-        videoKey: process.env.TWILIO_VIDEO_KEY,
-        videoSecret: process.env.TWILIO_VIDEO_SECRET
-    },
 }
