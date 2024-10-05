@@ -1,8 +1,9 @@
+import { MessageWithHeader } from "@service-broker/service-broker-client";
 import config from "../config";
 import logger from "./logger";
-import sb, { MessageWithHeader } from "./service-broker";
+import sb from "./service-broker";
 
-let checkInTimer: NodeJS.Timer;
+let checkInTimer: NodeJS.Timeout;
 const shutdownHandlers: Array<() => void|Promise<void>> = [];
 
 sb.setServiceHandler("service-manager-client", onRequest);

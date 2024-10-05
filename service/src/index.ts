@@ -1,4 +1,5 @@
-import sb, { Message, MessageWithHeader } from "./common/service-broker";
+import { Message, MessageWithHeader } from "@service-broker/service-broker-client";
+import sb from "./common/service-broker";
 import "./common/service-manager";
 import config from "./config";
 import * as vemo from "./vemo";

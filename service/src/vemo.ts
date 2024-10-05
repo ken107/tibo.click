@@ -1,6 +1,6 @@
 import config from "./config"
 import { jwt } from "twilio"
-import * as assert from "assert"
+import assert from "assert"
 
 interface Session {
     hostName: string;

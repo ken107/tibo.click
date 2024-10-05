@@ -1,9 +1,16 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getSessionIdFromInvitation = exports.createInvitation = exports.getViewToken = exports.getControlToken = exports.createSession = void 0;
-const config_1 = require("./config");
+exports.createSession = createSession;
+exports.getControlToken = getControlToken;
+exports.getViewToken = getViewToken;
+exports.createInvitation = createInvitation;
+exports.getSessionIdFromInvitation = getSessionIdFromInvitation;
+const config_1 = __importDefault(require("./config"));
 const twilio_1 = require("twilio");
-const assert = require("assert");
+const assert_1 = __importDefault(require("assert"));
 const sessions = {};
 const invitations = {};
 function createSession(hostName) {
@@ -16,28 +23,25 @@ function createSession(hostName) {
     };
     return sessionId;
 }
-exports.createSession = createSession;
 function getControlToken(sessionId) {
-    assert(sessionId, "Missing args");
+    (0, assert_1.default)(sessionId, "Missing args");
     const session = sessions[sessionId];
     return session && {
         hostName: session.hostName,
         token: session.controlToken,
     };
 }
-exports.getControlToken = getControlToken;
 function getViewToken(sessionId) {
-    assert(sessionId, "Missing args");
+    (0, assert_1.default)(sessionId, "Missing args");
     const session = sessions[sessionId];
     return session && {
         hostName: session.hostName,
         token: session.viewToken,
     };
 }
-exports.getViewToken = getViewToken;
 function createInvitation(sessionId) {
-    assert(sessionId, "Missing args");
-    assert(sessions[sessionId], "Session not found");
+    (0, assert_1.default)(sessionId, "Missing args");
+    (0, assert_1.default)(sessions[sessionId], "Session not found");
     const inviteCode = generateInviteCode();
     const expires = Date.now() + config_1.default.invitationTtl;
     invitations[inviteCode] = {
@@ -46,13 +50,11 @@ function createInvitation(sessionId) {
     };
     return inviteCode;
 }
-exports.createInvitation = createInvitation;
 function getSessionIdFromInvitation(inviteCode) {
-    assert(inviteCode, "Missing args");
+    (0, assert_1.default)(inviteCode, "Missing args");
     const invitation = invitations[inviteCode];
-    return (invitation === null || invitation === void 0 ? void 0 : invitation.isValid()) ? invitation.sessionId : undefined;
+    return invitation?.isValid() ? invitation.sessionId : undefined;
 }
-exports.getSessionIdFromInvitation = getSessionIdFromInvitation;
 function generateSessionId() {
     return String(Math.random()).slice(2);
 }

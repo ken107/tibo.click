@@ -1,9 +1,12 @@
 "use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-const dotenv = require("dotenv");
-const assert = require("assert");
-dotenv.config();
-assert(process.env.SERVICE_BROKER_URL, "Missing env SERVICE_BROKER_URL");
+const dotenv_1 = __importDefault(require("dotenv"));
+const assert_1 = __importDefault(require("assert"));
+dotenv_1.default.config();
+(0, assert_1.default)(process.env.SERVICE_BROKER_URL, "Missing env SERVICE_BROKER_URL");
 if (!process.env.TWILIO_ACCOUNT_SID)
     throw "Missing env TWILIO_ACCOUNT_SID";
 if (!process.env.TWILIO_VIDEO_KEY)
