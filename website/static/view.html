@@ -28,22 +28,16 @@
             }
         </style>
 
+		<script src="https://unpkg.com/rxjs@^7/dist/bundles/rxjs.umd.min.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ygbV9kiqUc6oa4msXn9868pTtWMgiQaeYH7/t7LECLbyPA2x65Kgf80OJFdroafW" crossorigin="anonymous"></script>
         <script src="https://assets.lsdsoftware.com/lib/databind.js"></script>
-        <script src="https://media.twiliocdn.com/sdk/js/video/releases/2.8.0/twilio-video.min.js"></script>
+        <script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
         <script src="../js/common.js"></script>
         <script src="../js/rtc.js"></script>
         <script>
-            hostName = "Host";
-
-            callService("getViewToken", [queryString.s])
-                .then(session => {
-                    if (!session) throw new Error(getI18n("sessionNotFoundError"));
-                    hostName = session.hostName;
-                    return rtc.connect(session.token);
-                })
-                .catch(err => alert(err.message))
+            hostName = queryString.h;
+            rtc = makeRtc(`tibo-${queryString.s}`, true)
 
             rtc.setRpcHandler("onRequestAudio", function() {
                 confirmDialog.show(getI18np("requestAudioConfirmation", {hostName}))
@@ -96,11 +90,11 @@
             }
         </script>
     </head>
-    <body bind-var-can-chat="#buddy.connected"
+    <body bind-var-can-chat="#rtc.buddy.connected"
         bind-var-can-play-audio="false"
         bind-event-click="#canPlayAudio = true">
 
-        <audio autoplay bind-statement-1="if (#buddy.audioTrack && #canPlayAudio) #buddy.audioTrack.attach(thisElem)"></audio>
+        <audio autoplay bind-statement-1="if (#rtc.buddy.audioTrack && #canPlayAudio) thisElem.srcObject = new MediaStream([#rtc.buddy.audioTrack]); else thisElem.pause()"></audio>
 
         <div class="fullscreen-center">
             <div class="control-panel">
@@ -108,35 +102,38 @@
                     <div class="user">
                         <span class="connect-status"
                             bind-var-tooltip="new bootstrap.Tooltip(thisElem)"
-                            bind-statement-2="$(thisElem).attr('data-bs-original-title', #connected ? getI18n('onlineStatus') : getI18n('offlineStatus'))"
-                            bind-statement-1="$(thisElem).toggleClass('active', !!#connected)">●</span>
+                            bind-statement-2="$(thisElem).attr('data-bs-original-title', #rtc.connected ? getI18n('onlineStatus') : getI18n('offlineStatus'))"
+                            bind-statement-1="$(thisElem).toggleClass('active', !!#rtc.connected)">●</span>
                         <span class="ms-1 me-auto">{{getI18n("selfPronoun")}}</span>
                         <i class="material-icons audio-status"
                             bind-var-tooltip="new bootstrap.Tooltip(thisElem)"
-                            bind-statement-2="$(thisElem).attr('data-bs-original-title', #audioPublished ? getI18n('micActiveStatus') : getI18n('micInactiveStatus'))"
-                            bind-statement-1="$(thisElem).toggleClass('active', !!#audioPublished)">mic</i>
+                            bind-statement-2="$(thisElem).attr('data-bs-original-title', #rtc.audioPublished ? getI18n('micActiveStatus') : getI18n('micInactiveStatus'))"
+                            bind-statement-1="$(thisElem).toggleClass('active', !!#rtc.audioPublished)">mic</i>
                         <i class="material-icons screenshare-status"
                             bind-var-tooltip="new bootstrap.Tooltip(thisElem)"
-                            bind-statement-2="$(thisElem).attr('data-bs-original-title', #screenPublished ? getI18n('screenSharedStatus') : getI18n('screenNotSharedStatus'))"
-                            bind-statement-1="$(thisElem).toggleClass('active', !!#screenPublished)">desktop_windows</i>
+                            bind-statement-2="$(thisElem).attr('data-bs-original-title', #rtc.screenPublished ? getI18n('screenSharedStatus') : getI18n('screenNotSharedStatus'))"
+                            bind-statement-1="$(thisElem).toggleClass('active', !!#rtc.screenPublished)">desktop_windows</i>
                     </div>
                     <div class="user">
                         <span class="connect-status"
                             bind-var-tooltip="new bootstrap.Tooltip(thisElem)"
-                            bind-statement-2="$(thisElem).attr('data-bs-original-title', #buddy.connected ? getI18n('onlineStatus') : getI18n('offlineStatus'))"
-                            bind-statement-1="$(thisElem).toggleClass('active', !!#buddy.connected)">●</span>
-                        <span class="ms-1 me-auto">{{#hostName}}</span>
+                            bind-statement-2="$(thisElem).attr('data-bs-original-title', #rtc.buddy.connected ? getI18n('onlineStatus') : getI18n('offlineStatus'))"
+                            bind-statement-1="$(thisElem).toggleClass('active', !!#rtc.buddy.connected)">●</span>
+                        <span class="ms-1 me-auto">{{#hostName}} (host)</span>
                         <i class="material-icons audio-status"
                             bind-var-tooltip="new bootstrap.Tooltip(thisElem)"
-                            bind-statement-2="$(thisElem).attr('data-bs-original-title', #buddy.audioTrack ? getI18n('micActiveStatus') : getI18n('micInactiveStatus'))"
-                            bind-statement-1="$(thisElem).toggleClass('active', !!#buddy.audioTrack)">mic</i>
+                            bind-statement-2="$(thisElem).attr('data-bs-original-title', #rtc.buddy.audioTrack ? getI18n('micActiveStatus') : getI18n('micInactiveStatus'))"
+                            bind-statement-1="$(thisElem).toggleClass('active', !!#rtc.buddy.audioTrack)">mic</i>
                     </div>
                 </div>
-                <div class="chat-log" bind-statement-2="if (#chatLog.length) setTimeout(() => thisElem.scrollTop = thisElem.scrollHeight, 0)">
-                    <div bind-repeater-i="#chatLog.length" bind-var-entry="#chatLog[#i]">
+                <div class="chat-log"
+                    bind-statement-2="if (#rtc.chatLog.length) setTimeout(() => thisElem.scrollTop = thisElem.scrollHeight, 0)">
+                    <div bind-repeater-i="#rtc.chatLog.length"
+                        bind-var-entry="#rtc.chatLog[#i]">
                         <u>{{#entry.isOwn ? getI18n("selfPronoun") : #hostName}}</u>: {{#entry.text}}</div>
                 </div>
-                <form class="chat-input" bind-event-submit="rtc.sendChat(thisElem.message.value); thisElem.message.value=''; return false">
+                <form class="chat-input"
+                    bind-event-submit="rtc.buddy.sendChat(thisElem.message.value); thisElem.message.value=''; return false">
                     <div class="input-group">
                         <input type="text" name="message" class="form-control" autocomplete="off"
                             bind-statement-1="thisElem.disabled = !#canChat">
@@ -148,7 +145,7 @@
         </div>
 
         <div class="fullscreen-center" style="background-color: black; opacity: .5"
-            bind-repeater-if="#buddy.audioTrack && !#canPlayAudio && !#confirmDialog.visible ? 1 : 0">
+            bind-repeater-if="#rtc.buddy.audioTrack && !#canPlayAudio && !#confirmDialog.visible ? 1 : 0">
             <div style="font-size: xx-large; color: white">{{getI18n("clickToContinueText")}}</div>
         </div>
 

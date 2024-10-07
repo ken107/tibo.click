@@ -133,17 +133,11 @@ function getI18np(name, params) {
     return getI18n(name).replace(/{\w+}/g, str => params[str.slice(1,-1)] || str);
 }
 
+function immediate(get) {
+    return get()
+}
 
-if (!Promise.prototype.finally) {
-    Object.defineProperty(Promise.prototype, 'finally', {
-        value: function(callback) {
-            const promise = this;
-            function chain() {
-                return Promise.resolve(callback()).then(function() {return promise});
-            }
-            return promise.then(chain, chain);
-        },
-        configurable: true,
-        writable: true
-    })
+function lazy(get) {
+    let val
+    return () => val || (val = get())
 }

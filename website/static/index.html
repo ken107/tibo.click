@@ -50,10 +50,10 @@
                 clearErrors();
                 if (!inviteCode.trim()) return joinError = {message: getI18n("missingInviteCodeError")};
                 progress++;
-                callService("getSessionIdForInvitation", [inviteCode])
-                    .then(function(sessionId) {
+                callService("getSessionForInvitation", [inviteCode])
+                    .then(({sessionId, hostName}) => {
                         if (!sessionId) throw new Error(getI18n("invalidInviteCodeError"));
-                        location.href = "view.html?s=" + sessionId + "&l=" + (queryString.l || "en");
+                        location.href = "view.html?s=" + sessionId + "&h=" + encodeURIComponent(hostName) + "&l=" + (queryString.l || "en");
                     })
                     .catch(function(err) {
                         progress--;
@@ -67,7 +67,7 @@
                 progress++;
                 callService("createSession", [hostName])
                     .then(function(sessionId) {
-                        location.href = "control.html?s=" + sessionId + "&l=" + (queryString.l || "en");
+                        location.href = "control.html?s=" + sessionId + "&h=" + encodeURIComponent(hostName) + "&l=" + (queryString.l || "en");
                     })
                     .catch(function(err) {
                         progress--;
