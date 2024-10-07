@@ -44,7 +44,7 @@
             rtc = makeRtc(`tibo-${sessionId}`)
 
             function requestAudio() {
-                rtc.publishAudio();
+                rtc.buddy.publishAudio();
                 rtc.buddy.sendRpcMessage("onRequestAudio");
             }
 
@@ -98,8 +98,8 @@
         bind-statement-1="if (#rtc.chatLog.length) #showChat = true"
         bind-event-click="#canPlayAudio = true">
 
-        <video muted autoplay bind-statement-1="if (#rtc.buddy.videoTrack) thisElem.srcObject = new MediaStream([#rtc.buddy.videoTrack]); else thisElem.pause()"></video>
-        <audio autoplay bind-statement-1="if (#rtc.buddy.audioTrack && #canPlayAudio) thisElem.srcObject = new MediaStream([#rtc.buddy.audioTrack]); else thisElem.pause()"></audio>
+        <video muted autoplay bind-statement-1="if (#rtc.buddy.videoStream) thisElem.srcObject = #rtc.buddy.videoStream; else thisElem.pause()"></video>
+        <audio autoplay bind-statement-1="if (#rtc.buddy.audioStream && #canPlayAudio) thisElem.srcObject = #rtc.buddy.audioStream; else thisElem.pause()"></audio>
 
         <div class="control-panel">
             <div class="user-list">
@@ -122,12 +122,12 @@
                     <div class="ms-1 me-auto">{{getI18n("customerPronoun")}}</div>
                     <i class="material-icons audio-status"
                         bind-var-tooltip="new bootstrap.Tooltip(thisElem)"
-                        bind-statement-2="$(thisElem).attr('data-bs-original-title', #rtc.buddy.audioTrack ? getI18n('micActiveStatus') : getI18n('micInactiveStatus'))"
-                        bind-statement-1="$(thisElem).toggleClass('active', !!#rtc.buddy.audioTrack)">mic</i>
+                        bind-statement-2="$(thisElem).attr('data-bs-original-title', #rtc.buddy.audioStream ? getI18n('micActiveStatus') : getI18n('micInactiveStatus'))"
+                        bind-statement-1="$(thisElem).toggleClass('active', !!#rtc.buddy.audioStream)">mic</i>
                     <i class="material-icons screenshare-status"
                         bind-var-tooltip="new bootstrap.Tooltip(thisElem)"
-                        bind-statement-2="$(thisElem).attr('data-bs-original-title', #rtc.buddy.videoTrack ? getI18n('screenSharedStatus') : getI18n('screenNotSharedStatus'))"
-                        bind-statement-1="$(thisElem).toggleClass('active', !!#rtc.buddy.videoTrack)">desktop_windows</i>
+                        bind-statement-2="$(thisElem).attr('data-bs-original-title', #rtc.buddy.videoStream ? getI18n('screenSharedStatus') : getI18n('screenNotSharedStatus'))"
+                        bind-statement-1="$(thisElem).toggleClass('active', !!#rtc.buddy.videoStream)">desktop_windows</i>
                 </div>
             </div>
             <div class="buttons">
@@ -135,10 +135,10 @@
                     bind-repeater-if="#rtc.buddy.connected ? 0 : 1"
                     bind-event-click="inviteDialog.show()">{{getI18n("inviteButton")}}</button>
                 <button type="button" class="btn btn-sm btn-primary"
-                    bind-repeater-if="#rtc.buddy.connected && (!#rtc.audioPublished || !#rtc.buddy.audioTrack) ? 1 : 0"
+                    bind-repeater-if="#rtc.buddy.connected && (!#rtc.audioPublished || !#rtc.buddy.audioStream) ? 1 : 0"
                     bind-event-click="this.requestAudio()">{{getI18n("talkButton")}}</button>
                 <button type="button" class="btn btn-sm btn-primary"
-                    bind-repeater-if="#rtc.buddy.connected && !#rtc.buddy.videoTrack ? 1 : 0"
+                    bind-repeater-if="#rtc.buddy.connected && !#rtc.buddy.videoStream ? 1 : 0"
                     bind-event-click="this.requestScreen()">{{getI18n("requestScreenButton")}}</button>
                 <button type="button" class="btn btn-sm btn-primary"
                     bind-repeater-if="#canChat ? 1 : 0"

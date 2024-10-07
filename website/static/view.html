@@ -43,11 +43,11 @@
                 confirmDialog.show(getI18np("requestAudioConfirmation", {hostName}))
                     .then(granted => {
                         if (!granted) throw new Error("User did not accept the request");
-                        return rtc.publishAudio();
+                        return rtc.buddy.publishAudio();
                     })
                     .catch(err => {
                         console.error(err);
-                        rtc.sendRpcMessage("onFailRequest", [{code: err.code, message: err.message}, getSystemInfo()]);
+                        rtc.buddy.sendRpcMessage("onFailRequest", [{code: err.code, message: err.message}, getSystemInfo()]);
                     })
             })
 
@@ -55,11 +55,11 @@
                 confirmDialog.show(getI18np("requestScreenConfirmation", {hostName}))
                     .then(granted => {
                         if (!granted) throw new Error("User did not accept the request");
-                        return rtc.publishScreen();
+                        return rtc.buddy.publishScreen();
                     })
                     .catch(err => {
                         console.error(err);
-                        rtc.sendRpcMessage("onFailRequest", [{code: err.code, message: err.message}, getSystemInfo()]);
+                        rtc.buddy.sendRpcMessage("onFailRequest", [{code: err.code, message: err.message}, getSystemInfo()]);
                     })
             })
 
@@ -94,7 +94,7 @@
         bind-var-can-play-audio="false"
         bind-event-click="#canPlayAudio = true">
 
-        <audio autoplay bind-statement-1="if (#rtc.buddy.audioTrack && #canPlayAudio) thisElem.srcObject = new MediaStream([#rtc.buddy.audioTrack]); else thisElem.pause()"></audio>
+        <audio autoplay bind-statement-1="if (#rtc.buddy.audioStream && #canPlayAudio) thisElem.srcObject = #rtc.buddy.audioStream; else thisElem.pause()"></audio>
 
         <div class="fullscreen-center">
             <div class="control-panel">
@@ -122,8 +122,8 @@
                         <span class="ms-1 me-auto">{{#hostName}} (host)</span>
                         <i class="material-icons audio-status"
                             bind-var-tooltip="new bootstrap.Tooltip(thisElem)"
-                            bind-statement-2="$(thisElem).attr('data-bs-original-title', #rtc.buddy.audioTrack ? getI18n('micActiveStatus') : getI18n('micInactiveStatus'))"
-                            bind-statement-1="$(thisElem).toggleClass('active', !!#rtc.buddy.audioTrack)">mic</i>
+                            bind-statement-2="$(thisElem).attr('data-bs-original-title', #rtc.buddy.audioStream ? getI18n('micActiveStatus') : getI18n('micInactiveStatus'))"
+                            bind-statement-1="$(thisElem).toggleClass('active', !!#rtc.buddy.audioStream)">mic</i>
                     </div>
                 </div>
                 <div class="chat-log"
@@ -145,7 +145,7 @@
         </div>
 
         <div class="fullscreen-center" style="background-color: black; opacity: .5"
-            bind-repeater-if="#rtc.buddy.audioTrack && !#canPlayAudio && !#confirmDialog.visible ? 1 : 0">
+            bind-repeater-if="#rtc.buddy.audioStream && !#canPlayAudio && !#confirmDialog.visible ? 1 : 0">
             <div style="font-size: xx-large; color: white">{{getI18n("clickToContinueText")}}</div>
         </div>
 
