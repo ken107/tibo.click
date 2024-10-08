@@ -1,11 +1,11 @@
 {
-  "name": "vemo",
+  "name": "tibo-website",
   "version": "1.0.0",
-  "description": "Vemo.app website",
+  "description": "tibo.click website",
   "scripts": {
     "start": "http-server static",
-    "deploy": "aws s3 sync --delete --metadata-directive REPLACE --cache-control max-age=3600,public static s3://lsdsoftware-websites/tibo.click"
+    "deploy": "aws s3 sync --delete --metadata-directive REPLACE --cache-control max-age=86400,public static s3://lsdsoftware-websites/tibo.click"
   },
-  "author": "Vemo LLC <support@vemo.app>",
-  "license": "ISC"
+  "author": "Hai Phan <hai.phan@gmail.com>",
+  "license": "MIT"
 }

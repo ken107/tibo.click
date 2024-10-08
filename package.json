@@ -1,15 +1,19 @@
 {
-  "name": "tibo",
+  "name": "tibo.click",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Remote assistance for dummies",
   "scripts": {
     "start": "cd service && node dist/index"
   },
+  "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "codecommit:/v1/repos/tibo"
+    "url": "git+https://github.com/ken107/tibo.click.git"
   },
-  "author": "",
-  "license": "ISC"
+  "author": "Hai Phan <hai.phan@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ken107/tibo.click/issues"
+  },
+  "homepage": "https://github.com/ken107/tibo.click#readme"
 }

@@ -1,15 +1,15 @@
 {
-  "name": "service",
+  "name": "tibo-service",
   "version": "1.0.0",
-  "description": "Vemo web service",
+  "description": "tibo.click service",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
     "watch": "tsc --watch",
     "start": "node dist/index"
   },
-  "author": "Vemo LLC <support@vemo.app>",
-  "license": "ISC",
+  "author": "Hai Phan <hai.phan@gmail.com>",
+  "license": "MIT",
   "dependencies": {
     "@service-broker/service-broker-client": "^2.5.0",
     "dotenv": "^16.4.5"
