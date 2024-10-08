@@ -122,6 +122,7 @@ function makeRtc(token, isViewer) {
                 try {
                     const myScreenStream = await new Promise((f,r) => myScreenSub = myScreen$.subscribe({next: f, error: r}))
                     const call = peer.call(conn.peer, myScreenStream)
+                    myScreenStream.getVideoTracks()[0].addEventListener("ended", () => call.close(), {once: true})
                     cleanups.push(() => call.close())
                     await new Promise((f,r) => call.once("close", f).once("error", r))
                 }

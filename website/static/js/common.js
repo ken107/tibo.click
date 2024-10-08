@@ -15,18 +15,14 @@ function parseQueryString() {
 }
 
 
-function callService(method, args) {
-	return new Promise(function(fulfill, reject) {
-		$.ajax({
-			method: "POST",
-			url: "https://service.lsdsoftware.com/tibo",
-			contentType: "application/json",
-			data: JSON.stringify({method, args}),
-			dataType: "text",
-			success: text => fulfill(text ? JSON.parse(text) : null),
-			error: (xhr, textStatus, errorThrown) => reject(new Error(xhr.responseText || errorThrown || textStatus))
-		})
-	})
+async function callService(method, args) {
+	const res = await fetch("https://service.lsdsoftware.com/tibo", {
+        method: "POST",
+        headers: {"Content-Type": "application/json"},
+        body: JSON.stringify({method, args})
+    })
+    if (!res.ok) throw new Error("Server return " + res.status)
+    return res.json()
 }
 
 
