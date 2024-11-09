@@ -1,7 +1,4 @@
 {
-  "name": "tibo-service",
-  "version": "1.0.0",
-  "description": "tibo.click service",
   "main": "dist/index.js",
   "scripts": {
     "build": "tsc",
@@ -11,11 +8,11 @@
   "author": "Hai Phan <hai.phan@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@service-broker/service-broker-client": "^2.5.0",
+    "@service-broker/service-broker-client": "^2.6.0",
     "dotenv": "^16.4.5"
   },
   "devDependencies": {
-    "@types/node": "^22.7.4",
-    "typescript": "^5.6.2"
+    "@types/node": "^22.9.0",
+    "typescript": "^5.6.3"
   }
 }

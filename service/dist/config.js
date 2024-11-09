@@ -7,9 +7,13 @@ const assert_1 = __importDefault(require("assert"));
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 (0, assert_1.default)(process.env.SERVICE_BROKER_URL, "Missing env SERVICE_BROKER_URL");
+(0, assert_1.default)(process.env.APP_SERVICE_BROKER_URL, "Missing env APP_SERVICE_BROKER_URL");
+(0, assert_1.default)(process.env.APP_SERVICE_BROKER_AUTH_TOKEN, "Missing env APP_SERVICE_BROKER_AUTH_TOKEN");
 exports.default = {
     // service broker info
     serviceBrokerUrl: process.env.SERVICE_BROKER_URL,
+    appServiceBrokerUrl: process.env.APP_SERVICE_BROKER_URL,
+    appServiceBrokerAuthToken: process.env.APP_SERVICE_BROKER_AUTH_TOKEN,
     // service deployment info
     siteName: process.env.SITE_NAME,
     serviceName: process.env.SERVICE_NAME,

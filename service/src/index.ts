@@ -1,11 +1,11 @@
 import { Message, MessageWithHeader } from "@service-broker/service-broker-client";
 import logger from "./common/logger";
-import sb from "./common/service-broker";
+import { asb } from "./common/service-broker";
 import "./common/service-manager";
 import config from "./config";
 import * as vemo from "./vemo";
 
-sb.advertise(config.service, onRequest);
+asb.advertise(config.service, onRequest);
 
 
 async function onRequest(req: MessageWithHeader): Promise<Message> {

@@ -4,11 +4,15 @@ import dotenv from "dotenv";
 dotenv.config();
 
 assert(process.env.SERVICE_BROKER_URL, "Missing env SERVICE_BROKER_URL")
+assert(process.env.APP_SERVICE_BROKER_URL, "Missing env APP_SERVICE_BROKER_URL")
+assert(process.env.APP_SERVICE_BROKER_AUTH_TOKEN, "Missing env APP_SERVICE_BROKER_AUTH_TOKEN")
 
 
 export default {
     // service broker info
     serviceBrokerUrl: process.env.SERVICE_BROKER_URL,
+    appServiceBrokerUrl: process.env.APP_SERVICE_BROKER_URL,
+    appServiceBrokerAuthToken: process.env.APP_SERVICE_BROKER_AUTH_TOKEN,
 
     // service deployment info
     siteName: process.env.SITE_NAME,

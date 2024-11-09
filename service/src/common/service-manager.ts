@@ -1,7 +1,7 @@
 import { MessageWithHeader } from "@service-broker/service-broker-client";
 import config from "../config";
 import logger from "./logger";
-import sb from "./service-broker";
+import sb, { asb } from "./service-broker";
 
 let checkInTimer: NodeJS.Timeout;
 const shutdownHandlers: Array<() => void|Promise<void>> = [];
@@ -27,7 +27,10 @@ async function remoteShutdown(req: MessageWithHeader) {
   for (const handler of shutdownHandlers) await handler();
   clearTimeout(checkInTimer);
 
-  setTimeout(() => sb.shutdown(), 1000);
+  setTimeout(() => {
+    sb.shutdown()
+    asb.shutdown()
+  }, 1000);
 }
 
 export async function shutdown() {
@@ -35,7 +38,10 @@ export async function shutdown() {
   clearTimeout(checkInTimer);
 
   await new Promise(f => setTimeout(f, 1000))
-  await sb.shutdown()
+  await Promise.all([
+    sb.shutdown(),
+    asb.shutdown()
+  ])
 }
 
 function checkIn() {

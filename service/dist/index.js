@@ -27,11 +27,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const logger_1 = __importDefault(require("./common/logger"));
-const service_broker_1 = __importDefault(require("./common/service-broker"));
+const service_broker_1 = require("./common/service-broker");
 require("./common/service-manager");
 const config_1 = __importDefault(require("./config"));
 const vemo = __importStar(require("./vemo"));
-service_broker_1.default.advertise(config_1.default.service, onRequest);
+service_broker_1.asb.advertise(config_1.default.service, onRequest);
 async function onRequest(req) {
     const { method, args } = req.header.method ? req.header : JSON.parse(req.payload);
     try {
